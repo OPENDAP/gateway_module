@@ -1,0 +1,119 @@
+
+# Automake file for gateway-handler
+#
+# 5/17/2005 jhrg
+#
+# $Id: Makefile.am 12972 2006-01-05 15:41:07Z pwest $
+
+AUTOMAKE_OPTIONS = foreign check-news
+
+ACLOCAL_AMFLAGS = -I conf
+
+lib_besdir=$(libdir)/bes
+lib_bes_LTLIBRARIES = libgateway_module.la
+dist_bin_SCRIPTS = bes-gateway-data.sh
+
+GATEWAY_SRCS = \
+		GatewayModule.cc GatewayRequestHandler.cc		\
+		GatewayContainer.cc GatewayContainerStorage.cc		\
+		GatewayError.cc GatewayRequest.cc GatewayUtils.cc
+
+GATEWAY_HDRS = \
+		GatewayModule.h GatewayRequestHandler.h			\
+		GatewayResponseNames.h					\
+		GatewayContainer.h GatewayContainerStorage.h		\
+		GatewayError.h GatewayRequest.h GatewayUtils.h
+
+libgateway_module_la_SOURCES = $(GATEWAY_SRCS) $(GATEWAY_HDRS)
+libgateway_module_la_CPPFLAGS = $(BES_CPPFLAGS)
+libgateway_module_la_LDFLAGS = -avoid-version -module 
+libgateway_module_la_LIBADD = $(BES_DAP_LIBS)
+
+EXTRA_PROGRAMS = 
+
+EXTRA_DIST = data COPYRIGHT COPYING gateway_module.spec \
+    gateway.conf.in OSX_Resources
+
+CLEANFILES = *~ nc.conf
+
+install-data-local: gateway.conf
+	@currdate=`date +"%y%m%d%H%M"`; \
+	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
+	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
+	test -f $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf.$$currdate; \
+	$(INSTALL_DATA) gateway.conf $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf
+
+uninstall-local:
+	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf
+
+gateway.conf: gateway.conf.in config.status
+	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > gateway.conf
+
+# Not nearly as clean as it could be, but this removes .svn directories
+# in subdirs.
+dist-hook:
+	rm -rf `find $(distdir) -name .svn`
+
+C4_DIR=./cccc
+.PHONY: cccc
+cccc:	
+	cccc --outdir=$(C4_DIR) $(libnc_module_la_SOURCES)
+
+###########################################################################
+
+# Fortify targets.
+
+.PHONY: fortify
+fortify:
+	sourceanalyzer -b @PACKAGE@ $(MAKE)
+	sourceanalyzer -b @PACKAGE@ -scan -f @PACKAGE@-@PACKAGE_VERSION@.fpr
+
+# Use this to clean the fortify project.
+.PHONY: fortifyclean
+fortifyclean:
+	sourceanalyzer -b @PACKAGE@ -clean
+
+###########################################################################
+#
+# Build linux RPMs
+
+srpm: dist
+	rpmbuild -ts gateway_module-@PACKAGE_VERSION@.tar.gz
+
+rpm: dist
+	rpmbuild -tb gateway_module-@PACKAGE_VERSION@.tar.gz
+
+###########################################################################
+
+# Build OS/X Packages. The strange operations with configure and make
+# are there so that the values built into bes-config will match the mac
+# osx install dirs and not the temp directory used to build the packages
+
+PACKAGEMAKER=/Developer/usr/bin/packagemaker
+PKG_CONF_FLAGS=
+
+clean-pkg:
+	-rm -rf mac_osx @PACKAGE@-@PACKAGE_VERSION@.pkg @PACKAGE@-@PACKAGE_VERSION@
+
+pkg-build:
+	./configure --prefix=/usr --disable-dependency-tracking $(PKG_CONF_FLAGS)
+	make clean all
+	DESTDIR=`pwd`/mac_osx make install
+
+pkg-main:
+	./OSX_Resources/update_mac_package_contents.pl README
+	${PACKAGEMAKER} --root mac_osx/usr --id org.opendap.@PACKAGE@ \
+		--title "@PACKAGE@ @PACKAGE_VERSION@" --version @PACKAGE_VERSION@ \
+		--out @PACKAGE@-@PACKAGE_VERSION@.pkg --resources OSX_Resources
+
+pkg-dmg:
+	-rm -rf @PACKAGE@-@PACKAGE_VERSION@
+	-rm -rf @PACKAGE@-@PACKAGE_VERSION@.dmg
+	mkdir @PACKAGE@-@PACKAGE_VERSION@
+	mv @PACKAGE@-@PACKAGE_VERSION@.pkg @PACKAGE@-@PACKAGE_VERSION@
+	cp README NEWS @PACKAGE@-@PACKAGE_VERSION@
+	dropdmg -i --sanitize-for-servers --format zlib @PACKAGE@-@PACKAGE_VERSION@
+	-rm -rf @PACKAGE@-@PACKAGE_VERSION@
+
+pkg: clean-pkg pkg-build pkg-main pkg-dmg
+
