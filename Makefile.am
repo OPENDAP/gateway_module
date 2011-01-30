@@ -11,7 +11,6 @@ ACLOCAL_AMFLAGS = -I conf
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libgateway_module.la
-dist_bin_SCRIPTS = bes-gateway-data.sh
 
 GATEWAY_SRCS = \
 		GatewayModule.cc GatewayRequestHandler.cc		\
