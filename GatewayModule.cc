@@ -1,8 +1,12 @@
 // GatewayModule.cc
 
 #include <iostream>
+#include <vector>
+#include <string>
 
 using std::endl ;
+using std::vector ;
+using std::string ;
 
 #include "GatewayModule.h"
 
@@ -11,6 +15,8 @@ using std::endl ;
 #include <BESResponseHandlerList.h>
 #include <BESResponseNames.h>
 #include <BESContainerStorageList.h>
+#include <TheBESKeys.h>
+#include <BESSyntaxUserError.h>
 
 #include "GatewayRequestHandler.h"
 #include "GatewayResponseNames.h"
@@ -30,7 +36,19 @@ GatewayModule::initialize( const string &modname )
     BESContainerStorageList::TheList()->
 	add_persistence( new GatewayContainerStorage( modname ) ) ;
 
-    // INIT_END
+    BESDEBUG( modname, "    making sure Whitelist is defined" << endl ) ;
+    bool found = false ;
+    string key = Gateway_WHITESPACE ;
+    vector<string> values ;
+    TheBESKeys::TheKeys()->get_values( key, values, found ) ;
+    if( !found || values.size() == 0 )
+    {
+	string err = (string)"The parameter " + Gateway_WHITESPACE +
+	             " is not set or has no values in the gateway" +
+		     " configuration file" ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    }
+
     BESDEBUG( modname, "    adding Gateway debug context" << endl ) ;
     BESDebug::Register( modname ) ;
 

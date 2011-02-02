@@ -5,5 +5,7 @@
 
 #define Gateway_NAME "gateway"
 
+#define Gateway_WHITESPACE "Gateway.Whitelist"
+
 #endif // E_GatewayResponseNames_H
 

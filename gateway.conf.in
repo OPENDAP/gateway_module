@@ -21,4 +21,11 @@ BES.module.gateway=@bes_modules_dir@/libgateway_module.so
 #-----------------------------------------------------------------------#
 # Gateway module specific parameters
 #-----------------------------------------------------------------------#
-
+# Gateway.whitelist - provides a list of URL of the form
+#       protocol://host.domain:port
+# that are allowed to be passed through the gateway module. If none
+# specified, then no URLs will be passed through this node
+#example:
+# Gateway.whitelist=http://test.opendap.org/opendap
+# Gateway.whitelist+=http://opendap.rpi.edu/opendap
+Gateway.Whitelist=

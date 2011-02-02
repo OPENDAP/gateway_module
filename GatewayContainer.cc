@@ -31,11 +31,15 @@
 //      pcw       Patrick West <pwest@ucar.edu>
 
 #include "GatewayContainer.h"
+
+#include <BESSyntaxUserError.h>
+#include <BESInternalError.h>
+#include <BESDebug.h>
+#include <TheBESKeys.h>
+
 #include "GatewayRequest.h"
 #include "GatewayUtils.h"
-#include "BESSyntaxUserError.h"
-#include "BESInternalError.h"
-#include "BESDebug.h"
+#include "GatewayResponseNames.h"
 
 /** @brief Creates an instances of GatewayContainer with symbolic name and real
  * name, which is the remote request.
@@ -53,6 +57,29 @@ GatewayContainer::GatewayContainer( const string &sym_name,
     : BESContainer( sym_name, real_name, type ), _response( 0 )
 {
     if( type.empty() ) set_container_type( "gateway" ) ;
+    bool found = false ;
+    string key = Gateway_WHITESPACE ;
+    vector<string> values ;
+    TheBESKeys::TheKeys()->get_values( key, values, found ) ;
+    vector<string>::const_iterator i = values.begin() ;
+    vector<string>::const_iterator e = values.end() ;
+    bool done = false ;
+    for( ; i != e && !done; i++ )
+    {
+	if( (*i).length() <= real_name.length() )
+	{
+	    if( real_name.substr( 0, (*i).length() ) == (*i) )
+	    {
+		done = true ;
+	    }
+	}
+    }
+    if( !done )
+    {
+	string err = (string)"The specified URL " + real_name +
+	             " does not match with any URLs in the whitelist" ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    }
 }
 
 GatewayContainer::GatewayContainer( const GatewayContainer &copy_from )
