@@ -26,6 +26,6 @@ BES.module.gateway=@bes_modules_dir@/libgateway_module.so
 # that are allowed to be passed through the gateway module. If none
 # specified, then no URLs will be passed through this node
 #example:
-# Gateway.whitelist=http://test.opendap.org/opendap
-# Gateway.whitelist+=http://opendap.rpi.edu/opendap
+# Gateway.Whitelist=http://test.opendap.org/opendap
+# Gateway.Whitelist+=http://opendap.rpi.edu/opendap
 Gateway.Whitelist=
