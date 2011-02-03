@@ -77,7 +77,7 @@ GatewayContainer::GatewayContainer( const string &sym_name,
     if( !done )
     {
 	string err = (string)"The specified URL " + real_name +
-	             " does not match with any URLs in the whitelist" ;
+	             " does not match any of the services accessible here." ;
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 }
