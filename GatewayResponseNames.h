@@ -5,7 +5,8 @@
 
 #define Gateway_NAME "gateway"
 
-#define Gateway_WHITESPACE "Gateway.Whitelist"
+#define Gateway_WHITELIST "Gateway.Whitelist"
+#define Gateway_MIMELIST "Gateway.MimeTypes"
 
 #endif // E_GatewayResponseNames_H
 

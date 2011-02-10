@@ -37,13 +37,67 @@
 #endif
 
 #include "GatewayUtils.h"
-#include "BESUtil.h"
-#include "TheBESKeys.h"
-#include "BESInternalError.h"
-#include "GNURegex.h"
-#include "util.h"
+#include "GatewayResponseNames.h"
+
+#include <BESUtil.h>
+#include <BESCatalogUtils.h>
+#include <BESRegex.h>
+#include <TheBESKeys.h>
+#include <BESInternalError.h>
+#include <BESSyntaxUserError.h>
+
+#include <GNURegex.h>
+#include <util.h>
 
 using namespace libdap ;
+
+vector<string> GatewayUtils::WhiteList ;
+map<string,string> GatewayUtils::MimeList ;
+
+// Initialization routine for the gateway module for certain parameters
+// and keys, like the white list, the MimeTypes translation.
+void
+GatewayUtils::Initialize()
+{
+    // Whitelist - list of domain that the gateway is allowed to
+    // communicate with.
+    bool found = false ;
+    string key = Gateway_WHITELIST ;
+    TheBESKeys::TheKeys()->get_values( key, WhiteList, found ) ;
+    if( !found || WhiteList.size() == 0 )
+    {
+	string err = (string)"The parameter " + Gateway_WHITELIST +
+			     " is not set or has no values in the gateway" +
+			     " configuration file" ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+	
+    }
+
+    // MimeTypes - translate from a mime type to a module name
+    found = false ;
+    key = Gateway_MIMELIST ;
+    vector<string> vals ;
+    TheBESKeys::TheKeys()->get_values( key, vals, found ) ;
+    if( found && vals.size() )
+    {
+	vector<string>::iterator i = vals.begin() ;
+	vector<string>::iterator e = vals.end() ;
+	for( ; i != e; i++ )
+	{
+	    size_t colon = (*i).find( ":" ) ;
+	    if( colon == string::npos )
+	    {
+		string err = (string)"Malformed " + Gateway_MIMELIST + " "
+		             + (*i)
+			     + " specified in the gateway configuration" ;
+		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+	    }
+	    string mod = (*i).substr( 0, colon ) ;
+	    string mime = (*i).substr( colon+1 ) ;
+	    MimeList[mod] = mime ;
+	}
+    }
+}
 
 // Look around for a reasonable place to put a temporary file. Check first
 // the value of the TMPDIR env var. If that does not yield a path that's
@@ -59,7 +113,7 @@ using namespace libdap ;
 // methods to read from a stream returned by libcurl, not from a temporary
 // file. 9/21/07 jhrg
 char *
-GatewayUtils::get_tempfile_template(char *file_template)
+GatewayUtils::Get_tempfile_template( char *file_template )
 {
 #ifdef WIN32
     // white list for a WIN32 directory
@@ -101,5 +155,121 @@ valid_temp_directory:
     strncpy(temp, c.c_str(), c.length());
 
     return temp;
+}
+
+void
+GatewayUtils::Get_type_from_disposition( const string &disp, string &type )
+{
+    size_t pos = disp.find( "filename" ) ;
+    if( pos != string::npos )
+    {
+	// Got the filename attribute, now get the
+	// filename, which is after the pound sign (#)
+	pos = disp.find( "#", pos ) ;
+	if( pos != string::npos )
+	{
+	    // Got the filename to the end of the
+	    // string, now get it to either the end of
+	    // the string or the start of the next
+	    // attribute
+	    string filename ;
+	    size_t sp = disp.find( " ", pos ) ;
+	    if( pos != string::npos )
+	    {
+		// space before the next attribute
+		filename = disp.substr( pos+1, sp-pos-1 ) ;
+	    }
+	    else
+	    {
+		// to the end of the string
+		filename = disp.substr( pos+1 ) ;
+	    }
+
+	    // we have the filename now, run it through
+	    // the type match to get the file type
+	    const BESCatalogUtils *utils =
+		    BESCatalogUtils::Utils( "catalog" ) ;
+	    BESCatalogUtils::match_citer i =
+		    utils->match_list_begin() ;
+	    BESCatalogUtils::match_citer ie =
+		    utils->match_list_end() ;
+	    bool done = false ;
+	    for( ; i != ie && !done; i++ )
+	    {
+		BESCatalogUtils::type_reg match = (*i) ;
+		try
+		{
+		    BESRegex reg_expr( match.reg.c_str() ) ;
+		    if( reg_expr.match( filename.c_str(),
+					filename.length() )
+			== static_cast<int>(filename.length()) )
+		    {
+			type = match.type ;
+			done = true ;
+		    }
+		}
+		catch( Error &e )
+		{
+		    string serr = (string)"Unable to match data type, "
+			  + "malformed Catalog TypeMatch parameter " 
+			  + "in bes configuration file around " 
+			  + match.reg + ": " + e.get_error_message() ;
+		    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
+		}
+	    }
+	}
+    }
+}
+
+void
+GatewayUtils::Get_type_from_content_type( const string &ctype, string &type )
+{
+    map<string,string>::iterator i = MimeList.begin() ;
+    map<string,string>::iterator e = MimeList.end() ;
+    bool done = false ;
+    for( ; i != e && !done; i++ )
+    {
+	if( (*i).second == ctype )
+	{
+	    type = (*i).first ;
+	    done = true ;
+	}
+    }
+}
+
+void
+GatewayUtils::Get_type_from_url( const string &url, string &type )
+{
+    // just run the url through the type match from the configuration
+    const BESCatalogUtils *utils =
+	    BESCatalogUtils::Utils( "catalog" ) ;
+    BESCatalogUtils::match_citer i =
+	    utils->match_list_begin() ;
+    BESCatalogUtils::match_citer ie =
+	    utils->match_list_end() ;
+    bool done = false ;
+    for( ; i != ie && !done; i++ )
+    {
+	BESCatalogUtils::type_reg match = (*i) ;
+	try
+	{
+	    BESRegex reg_expr( match.reg.c_str() ) ;
+	    if( reg_expr.match( url.c_str(),
+				url.length() )
+		== static_cast<int>(url.length()) )
+	    {
+		type = match.type ;
+		done = true ;
+	    }
+	}
+	catch( Error &e )
+	{
+	    string serr = (string)"Unable to match data type, "
+		  + "malformed Catalog TypeMatch parameter " 
+		  + "in bes configuration file around " 
+		  + match.reg + ": " + e.get_error_message() ;
+	    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
+	}
+    }
 }
 

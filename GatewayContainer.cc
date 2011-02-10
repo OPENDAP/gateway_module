@@ -57,12 +57,8 @@ GatewayContainer::GatewayContainer( const string &sym_name,
     : BESContainer( sym_name, real_name, type ), _response( 0 )
 {
     if( type.empty() ) set_container_type( "gateway" ) ;
-    bool found = false ;
-    string key = Gateway_WHITESPACE ;
-    vector<string> values ;
-    TheBESKeys::TheKeys()->get_values( key, values, found ) ;
-    vector<string>::const_iterator i = values.begin() ;
-    vector<string>::const_iterator e = values.end() ;
+    vector<string>::const_iterator i = GatewayUtils::WhiteList.begin() ;
+    vector<string>::const_iterator e = GatewayUtils::WhiteList.end() ;
     bool done = false ;
     for( ; i != e && !done; i++ )
     {

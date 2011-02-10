@@ -33,13 +33,33 @@
 #ifndef I_GatewayUtils_H
 #define I_GatewayUtils_H 1
 
+#include <string>
+#include <map>
+#include <vector>
+
+using std::string ;
+using std::vector ;
+using std::map ;
+
 /** @brief utility class for the gateway remote request mechanism
  *
  */
 class GatewayUtils
 {
 public:
-    static char *		get_tempfile_template( char *file_template ) ;
+    static vector<string>	WhiteList ;
+    static map<string,string>	MimeList ;
+
+    static void			Initialize() ;
+
+    static char *		Get_tempfile_template( char *file_template ) ;
+
+    static void			Get_type_from_disposition( const string &disp,
+						           string &type ) ;
+    static void			Get_type_from_content_type( const string &ctype,
+						            string &type ) ;
+    static void			Get_type_from_url( const string &url,
+						   string &type ) ;
 } ;
 
 #endif // I_GatewayUtils_H

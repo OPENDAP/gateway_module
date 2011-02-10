@@ -37,6 +37,7 @@
 using namespace libdap ;
 
 #include <BESInternalError.h>
+#include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 #include <BESCatalogUtils.h>
 #include <BESRegex.h>
@@ -120,23 +121,29 @@ GatewayRequest::make_request( const string &url, string &type )
 
     if( type.empty() || type == "gateway" )
     {
+	// make sure that the type is empty, and not gateway
+	type = "" ;
+
 	// Try and figure out the file type first from the
 	// Content-Disposition in the http header response.
 	string disp ;
+	string ctype ;
 	vector<string> *hdrs = response->get_headers() ;
 	if( hdrs )
 	{
 	    vector<string>::const_iterator i = hdrs->begin() ;
 	    vector<string>::const_iterator e = hdrs->end() ;
-	    bool done = false ;
-	    for( ; i != e && !done; i++ )
+	    for( ; i != e; i++ )
 	    {
 		string hdr_line = (*i) ;
 		if( hdr_line.find( "Content-Disposition" ) != string::npos )
 		{
 		    // Content disposition exists
 		    disp = hdr_line ;
-		    done = true ;
+		}
+		if( hdr_line.find( "Content-Type" ) != string::npos )
+		{
+		    ctype = hdr_line ;
 		}
 	    }
 	}
@@ -145,66 +152,31 @@ GatewayRequest::make_request( const string &url, string &type )
 	{
 	    // Content disposition exists, grab the filename
 	    // attribute
-	    size_t pos = disp.find( "filename" ) ;
-	    if( pos != string::npos )
-	    {
-		// Got the filename attribute, now get the
-		// filename, which is after the pound sign (#)
-		pos = disp.find( "#", pos ) ;
-		if( pos != string::npos )
-		{
-		    // Got the filename to the end of the
-		    // string, now get it to either the end of
-		    // the string or the start of the next
-		    // attribute
-		    string filename ;
-		    size_t sp = disp.find( " ", pos ) ;
-		    if( pos != string::npos )
-		    {
-			// space before the next attribute
-			filename = disp.substr( pos+1, sp-pos-1 ) ;
-		    }
-		    else
-		    {
-			// to the end of the string
-			filename = disp.substr( pos+1 ) ;
-		    }
+	    GatewayUtils::Get_type_from_disposition( disp, type ) ;
+	}
 
-		    // we have the filename now, run it through
-		    // the type match to get the file type
-		    // FIXME: should be configurable
-		    const BESCatalogUtils *utils =
-			    BESCatalogUtils::Utils( "catalog" ) ;
-		    BESCatalogUtils::match_citer i =
-			    utils->match_list_begin() ;
-		    BESCatalogUtils::match_citer ie =
-			    utils->match_list_end() ;
-		    bool done = false ;
-		    for( ; i != ie && !done; i++ )
-		    {
-			BESCatalogUtils::type_reg match = (*i) ;
-			try
-			{
-			    BESRegex reg_expr( match.reg.c_str() ) ;
-			    if( reg_expr.match( filename.c_str(),
-						filename.length() )
-				== static_cast<int>(filename.length()) )
-			    {
-				type = match.type ;
-				done = true ;
-			    }
-			}
-			catch( Error &e )
-			{
-			    string serr = (string)"Unable to match data type, "
-				  + "malformed Catalog TypeMatch parameter " 
-				  + "in bes configuration file around " 
-				  + match.reg + ": " + e.get_error_message() ;
-			    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
-			}
-		    }
-		}
-	    }
+	// still haven't figured out the type. Check the content-type
+	// next, translate to the BES module name. It's also possible
+	// that even though Content-disposition was available, we could
+	// not determine the type of the file.
+	if( type.empty() && !ctype.empty() )
+	{
+	    GatewayUtils::Get_type_from_content_type( ctype, type ) ;
+	}
+
+	// still haven't figured out the type. Now check the actual URL
+	// and see if we can't match the URL to a module name
+	if( type.empty() )
+	{
+	    GatewayUtils::Get_type_from_url( url, type ) ;
+	}
+
+	// still couldn't figure it out ... throw an exception
+	if( type.empty() )
+	{
+	    string err = (string)"Unable to determine the type of data"
+			 + " returned from " + url ;
+	    throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
 	}
     }
 

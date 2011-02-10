@@ -9,6 +9,8 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
+SUBDIRS = bes-testsuite
+
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libgateway_module.la
 
