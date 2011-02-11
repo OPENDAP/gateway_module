@@ -121,5 +121,5 @@ pkg-dmg: pkg-main
 	dropdmg -i --sanitize-for-servers --format zlib @PACKAGE@-@PACKAGE_VERSION@
 	-rm -rf @PACKAGE@-@PACKAGE_VERSION@
 
-pkg: pkg-dmg
+pkg: pkg-main
 
