@@ -160,12 +160,13 @@ valid_temp_directory:
 void
 GatewayUtils::Get_type_from_disposition( const string &disp, string &type )
 {
-    size_t pos = disp.find( "filename" ) ;
-    if( pos != string::npos )
+    size_t fnpos = disp.find( "filename" ) ;
+    if( fnpos != string::npos )
     {
 	// Got the filename attribute, now get the
 	// filename, which is after the pound sign (#)
-	pos = disp.find( "#", pos ) ;
+	size_t pos = disp.find( "#", fnpos ) ;
+	if( pos == string::npos ) pos = disp.find( "=", fnpos ) ;
 	if( pos != string::npos )
 	{
 	    // Got the filename to the end of the
@@ -183,6 +184,16 @@ GatewayUtils::Get_type_from_disposition( const string &disp, string &type )
 	    {
 		// to the end of the string
 		filename = disp.substr( pos+1 ) ;
+	    }
+
+	    // now see if it's wrapped in quotes
+	    if( filename[0] == '"' )
+	    {
+		filename = filename.substr( 1 ) ;
+	    }
+	    if( filename[filename.length()-1] == '"' )
+	    {
+		filename = filename.substr( 0, filename.length() - 1 ) ;
 	    }
 
 	    // we have the filename now, run it through

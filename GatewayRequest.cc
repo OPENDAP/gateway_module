@@ -136,12 +136,13 @@ GatewayRequest::make_request( const string &url, string &type )
 	    for( ; i != e; i++ )
 	    {
 		string hdr_line = (*i) ;
-		if( hdr_line.find( "Content-Disposition" ) != string::npos )
+		hdr_line = BESUtil::lowercase( hdr_line ) ;
+		if( hdr_line.find( "content-disposition" ) != string::npos )
 		{
 		    // Content disposition exists
 		    disp = hdr_line ;
 		}
-		if( hdr_line.find( "Content-Type" ) != string::npos )
+		if( hdr_line.find( "content-type" ) != string::npos )
 		{
 		    ctype = hdr_line ;
 		}
