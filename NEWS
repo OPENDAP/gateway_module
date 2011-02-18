@@ -1,6 +1,9 @@
 
 $Id: NEWS $
 
-Version 0.0.1 (01 Jan 2009)
+Version 0.0.3 (18 Feb 2011)
 
-Version news.
+This is the first official release of the gateway module. This module
+allows the data provider to access remote data and serve it locally,
+returning DAP objects, or any other responses configured by this server.
+

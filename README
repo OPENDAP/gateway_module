@@ -1,9 +1,11 @@
 
-$Id: README $
+$Id: README 23584 2010-09-14 23:18:51Z jimg $
 
-This is the OPeNDAP Gateway Module. It is used along with Hyrax.
+Updated for version 0.0.3
 
-For information about building the OPeNDAP Gateway Module, see the
+This is the OPeNDAP gateway module. It is used along with OPeNDAP Hyrax.
+
+For information about building the OPeNDAP gateway module, see the
 INSTALL file.
 
 This module is a component of the OPeNDAP DAP Server; the server base
@@ -11,12 +13,36 @@ software is designed to allow any number of handlers to be configured easily.
 See the DAP Server README and INSTALL files for information about
 configuration, including how to use this handler.
 
-Special options supported by the handler: 
-* ShowSharedDimensions: Include shared dimensions as separate variables. 
-Accepted values: true,yes|false,no, defaults to false.
-Example: "NC.ShowSharedDimensions=false"
+Test data are also installed, so after installing this handler, Hyrax 
+will have data to serve providing an easy way to test your new installation
+and to see how a working csv.conf should look. To use this, make sure
+that you first install the bes, and that dap-server gets installed too.
+Finally, every time you install or reinstall handlers, make sure to restart
+the BES and OLFS.
 
-To use this, make sure that you first install the bes, and that
-dap-server gets installed too.  Finally, every time you install or
-reinstall handlers, make sure to restart the BES and OLFS.
+Special options supported by the handler: 
+* Gateway.Whitelist - provides a list of URL of the form
+    protocol://host.domain:port
+that are allowed to be passed through the gateway module. If none
+specified, then an error will be thrown during BES initialization. One
+URL per line, as in the example below.
+
+example:
+  Gateway.Whitelist=http://test.opendap.org/opendap
+  Gateway.Whitelist+=http://opendap.rpi.edu/opendap
+
+* Gateway.MimeTypes - provides a list of mappings from data handler
+module to returned mime types. These are the default types. Please do
+not erase. One per line, as in these default values.
+
+Gateway.MimeTypes=nc:application/x-netcdf
+Gateway.MimeTypes+=h4:application/x-hdf
+Gateway.MimeTypes+=h5:application/x-hdf5
+
+* Gateway.ProxyHost and Gateway.ProxyPort - provides a way to define a
+proxy server that must be used to make the remote request, and the
+port to use.
+
+Gateway.ProxyHost=
+Gateway.ProxyPort=
 
