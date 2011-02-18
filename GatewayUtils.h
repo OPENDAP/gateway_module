@@ -49,6 +49,8 @@ class GatewayUtils
 public:
     static vector<string>	WhiteList ;
     static map<string,string>	MimeList ;
+    static string		ProxyHost ;
+    static int			ProxyPort ;
 
     static void			Initialize() ;
 

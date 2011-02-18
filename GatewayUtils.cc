@@ -53,6 +53,8 @@ using namespace libdap ;
 
 vector<string> GatewayUtils::WhiteList ;
 map<string,string> GatewayUtils::MimeList ;
+string GatewayUtils::ProxyHost ;
+int GatewayUtils::ProxyPort = 0 ;
 
 // Initialization routine for the gateway module for certain parameters
 // and keys, like the white list, the MimeTypes translation.
@@ -95,6 +97,30 @@ GatewayUtils::Initialize()
 	    string mod = (*i).substr( 0, colon ) ;
 	    string mime = (*i).substr( colon+1 ) ;
 	    MimeList[mod] = mime ;
+	}
+    }
+
+    found = false ;
+    key = Gateway_PROXYHOST ;
+    TheBESKeys::TheKeys()->get_value( key, GatewayUtils::ProxyHost, found ) ;
+    if( found && !GatewayUtils::ProxyHost.empty() )
+    {
+	found = false ;
+	key = Gateway_PROXYPORT ;
+	string port ;
+	TheBESKeys::TheKeys()->get_value( key, port, found ) ;
+	if( !found || port.empty() )
+	{
+	    string err = (string)"gateway proxy host specified,"
+	                 + " but no proxy port specified" ;
+	    throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+	}
+	GatewayUtils::ProxyPort = atoi( port.c_str() ) ;
+	if( !GatewayUtils::ProxyPort )
+	{
+	    string err = (string)"gateway proxy host specified,"
+	                 + " but proxy port specified is invalid" ;
+	    throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
 	}
     }
 }
