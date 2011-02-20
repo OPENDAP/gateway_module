@@ -43,8 +43,10 @@ Gateway.MimeTypes=nc:application/x-netcdf
 Gateway.MimeTypes+=h4:application/x-hdf
 Gateway.MimeTypes+=h5:application/x-hdf5
 
-# Gateway.ProxyHost and Gateway.ProxyPort - provides a way to define a
-# proxy server that must be used to make the remote request, and the
+# Gateway.ProxyProtocol, Gateway.ProxyHost and Gateway.ProxyPort -
+# provides a way to define a proxy server that must be used to make the
+# remote request, the protocol to use with that (http|https|ftp) and the
 # port to use.
+Gateway.ProxyProtocol=
 Gateway.ProxyHost=
 Gateway.ProxyPort=

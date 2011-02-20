@@ -72,6 +72,7 @@ GatewayRequest::make_request( const string &url, string &type )
     BESDEBUG( "gateway", "  request = " << url << endl );
 
     RCReader *rcr = RCReader::instance() ;
+    rcr->set_proxy_server_protocol( GatewayUtils::ProxyProtocol ) ;
     rcr->set_proxy_server_host( GatewayUtils::ProxyHost ) ;
     rcr->set_proxy_server_port( GatewayUtils::ProxyPort ) ;
     rcr->set_use_cache( false ) ;

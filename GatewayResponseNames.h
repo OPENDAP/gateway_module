@@ -7,6 +7,7 @@
 
 #define Gateway_WHITELIST "Gateway.Whitelist"
 #define Gateway_MIMELIST "Gateway.MimeTypes"
+#define Gateway_PROXYPROTOCOL "Gateway.ProxyProtocol"
 #define Gateway_PROXYHOST "Gateway.ProxyHost"
 #define Gateway_PROXYPORT "Gateway.ProxyPort"
 

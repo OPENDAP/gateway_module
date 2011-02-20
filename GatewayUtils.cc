@@ -53,6 +53,7 @@ using namespace libdap ;
 
 vector<string> GatewayUtils::WhiteList ;
 map<string,string> GatewayUtils::MimeList ;
+string GatewayUtils::ProxyProtocol ;
 string GatewayUtils::ProxyHost ;
 int GatewayUtils::ProxyPort = 0 ;
 
@@ -105,22 +106,32 @@ GatewayUtils::Initialize()
     TheBESKeys::TheKeys()->get_value( key, GatewayUtils::ProxyHost, found ) ;
     if( found && !GatewayUtils::ProxyHost.empty() )
     {
+	// if the proxy host is set, then check to see if the port is
+	// set. Does not need to be.
 	found = false ;
 	key = Gateway_PROXYPORT ;
 	string port ;
 	TheBESKeys::TheKeys()->get_value( key, port, found ) ;
-	if( !found || port.empty() )
+	if( found && !port.empty() )
 	{
-	    string err = (string)"gateway proxy host specified,"
-	                 + " but no proxy port specified" ;
-	    throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+	    GatewayUtils::ProxyPort = atoi( port.c_str() ) ;
+	    if( !GatewayUtils::ProxyPort )
+	    {
+		string err = (string)"gateway proxy host specified,"
+			     + " but proxy port specified is invalid" ;
+		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+	    }
 	}
-	GatewayUtils::ProxyPort = atoi( port.c_str() ) ;
-	if( !GatewayUtils::ProxyPort )
+
+	// find the protocol to use for the proxy server. If none set,
+	// default to http
+	found = false ;
+	key = Gateway_PROXYPROTOCOL ;
+	TheBESKeys::TheKeys()->get_value( key, GatewayUtils::ProxyProtocol,
+					  found ) ;
+	if( !found || GatewayUtils::ProxyProtocol.empty() )
 	{
-	    string err = (string)"gateway proxy host specified,"
-	                 + " but proxy port specified is invalid" ;
-	    throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+	    GatewayUtils::ProxyProtocol = "http" ;
 	}
     }
 }
