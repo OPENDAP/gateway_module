@@ -32,7 +32,7 @@ libgateway_module_la_LIBADD = $(BES_DAP_LIBS)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = data COPYRIGHT COPYING gateway_module.spec \
+EXTRA_DIST = COPYRIGHT COPYING gateway_module.spec \
     gateway.conf.in OSX_Resources
 
 CLEANFILES = *~ gateway.conf
