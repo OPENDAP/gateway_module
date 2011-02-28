@@ -19,57 +19,12 @@
 GatewayRequestHandler::GatewayRequestHandler( const string &name )
     : BESRequestHandler( name )
 {
-    add_handler( DAS_RESPONSE, GatewayRequestHandler::gateway_build_das ) ;
-    add_handler( DDS_RESPONSE, GatewayRequestHandler::gateway_build_dds ) ;
-    add_handler( DATA_RESPONSE, GatewayRequestHandler::gateway_build_data ) ;
     add_handler( VERS_RESPONSE, GatewayRequestHandler::gateway_build_vers ) ;
     add_handler( HELP_RESPONSE, GatewayRequestHandler::gateway_build_help ) ;
 }
 
 GatewayRequestHandler::~GatewayRequestHandler()
 {
-}
-
-bool
-GatewayRequestHandler::gateway_build_das( BESDataHandlerInterface &dhi )
-{
-    bool ret = true ;
-    BESResponseObject *response =
-    dhi.response_handler->get_response_object();
-    BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response);
-    DAS *das = bdas->get_das();
-
-    // Your code goes here
-
-    return ret ;
-}
-
-bool
-GatewayRequestHandler::gateway_build_dds( BESDataHandlerInterface &dhi )
-{
-    bool ret = true ;
-    BESResponseObject *response =
-    dhi.response_handler->get_response_object();
-    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
-    DDS *dds = bdds->get_dds();
-
-    // Your code goes here
-
-    return ret ;
-}
-
-bool
-GatewayRequestHandler::gateway_build_data( BESDataHandlerInterface &dhi )
-{
-    bool ret = true ;
-    BESResponseObject *response =
-    dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
-    DataDDS *dds = bdds->get_dds();
-
-    // Your code goes here
-
-    return ret ;
 }
 
 bool

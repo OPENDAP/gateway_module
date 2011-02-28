@@ -12,7 +12,7 @@ CONFIGURATION
 
 BUILDING THE SOFTWARE
 
-  To build the csv data handler module software, follow these steps:
+  To build the gateway module module software, follow these steps:
 
   0. Please skim BUILD REQUIREMENTS and NOTES sections of this file before
      reporting problems. Also, this software _requires_ other software

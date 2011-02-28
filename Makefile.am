@@ -35,7 +35,7 @@ EXTRA_PROGRAMS =
 EXTRA_DIST = data COPYRIGHT COPYING gateway_module.spec \
     gateway.conf.in OSX_Resources
 
-CLEANFILES = *~ nc.conf
+CLEANFILES = *~ gateway.conf
 
 install-data-local: gateway.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
@@ -58,7 +58,7 @@ dist-hook:
 C4_DIR=./cccc
 .PHONY: cccc
 cccc:	
-	cccc --outdir=$(C4_DIR) $(libnc_module_la_SOURCES)
+	cccc --outdir=$(C4_DIR) $(libgateway_module_la_SOURCES)
 
 ###########################################################################
 
