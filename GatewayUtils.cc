@@ -35,6 +35,8 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <cstdlib>
+#include <cstring>
 
 #include "GatewayUtils.h"
 #include "GatewayResponseNames.h"
