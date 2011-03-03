@@ -139,6 +139,8 @@ GatewayContainer::access()
 	_response = r.make_request( get_real_name(), type ) ;
 	if( _response )
 	    accessed = _response->get_file() ;
+	BESDEBUG( "gateway", "gateway request using HTTPConnect returned file "
+	                     << accessed << endl ) ;
 	set_container_type( type ) ;
     }
     else
