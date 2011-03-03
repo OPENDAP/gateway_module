@@ -31,7 +31,7 @@ BES.module.gateway=@bes_modules_dir@/libgateway_module.so
 # Gateway.Whitelist=http://test.opendap.org/opendap
 # Gateway.Whitelist+=http://opendap.rpi.edu/opendap
 #
-Gateway.Whitelist=
+Gateway.Whitelist=http://localhost
 
 # Gateway.MimeTypes - provides a list of mappings from data handler
 # module to returned mime types. These are the default types. Please do
