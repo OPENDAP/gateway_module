@@ -3,15 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleGetInfoString</key>
-	<string>0.0.3, OPeNDAP gateway_module</string>
+	<string>_FULL_VERSION_, OPeNDAP gateway_module</string>
 	<key>CFBundleIdentifier</key>
 	<string>opendap.gateway_module</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.0.3</string>
+	<string>_FULL_VERSION_</string>
 	<key>IFMajorVersion</key>
-	<integer>0</integer>
+	<integer>_MAJOR_VERSION_</integer>
 	<key>IFMinorVersion</key>
-	<integer>0</integer>
+	<integer>_MINOR_VERSION_</integer>
 	<key>IFPkgFlagAllowBackRev</key>
 	<false/>
 	<key>IFPkgFlagAuthorizationAction</key>
