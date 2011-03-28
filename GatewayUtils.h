@@ -54,9 +54,9 @@ public:
     static int			ProxyPort ;
 
     static void			Initialize() ;
-
+#if 0
     static char *		Get_tempfile_template( char *file_template ) ;
-
+#endif
     static void			Get_type_from_disposition( const string &disp,
 						           string &type ) ;
     static void			Get_type_from_content_type( const string &ctype,

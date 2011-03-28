@@ -138,6 +138,10 @@ GatewayUtils::Initialize()
     }
 }
 
+// Not used. There's a better version of this that returns a string in libdap.
+// jhrg 3/24/11
+
+#if 0
 // Look around for a reasonable place to put a temporary file. Check first
 // the value of the TMPDIR env var. If that does not yield a path that's
 // writable (as defined by access(..., W_OK|R_OK)) then look at P_tmpdir (as
@@ -158,18 +162,18 @@ GatewayUtils::Get_tempfile_template( char *file_template )
     // white list for a WIN32 directory
     Regex directory("[-a-zA-Z0-9_\\]*");
 
-    string c = getenv("TEMP");
-    if (c && directory.match(c.c_str(), c.length()) && (access(getenv("TEMP"), 6) == 0))
+    string c = getenv("TEMP") ? getenv("TEMP") : "";
+    if (!c.empty() && directory.match(c.c_str(), c.length()) && (access(c.c_str(), 6) == 0))
     	goto valid_temp_directory;
 
-    c = getenv("TMP");
-    if (c && directory.match(c.c_str(), c.length()) && (access(getenv("TEMP"), 6) == 0))
+    c = getenv("TMP") ? getenv("TMP") : "";
+    if (!c.empty() && directory.match(c.c_str(), c.length()) && (access(c.c_str(), 6) == 0))
     	goto valid_temp_directory;
 #else
 	// white list for a directory
 	Regex directory("[-a-zA-Z0-9_/]*");
 
-	string c = getenv("TMPDIR");
+	string c = getenv("TMPDIR") ? getenv("TMPDIR") : "";
 	if (!c.empty() && directory.match(c.c_str(), c.length())
 		&& (access(c.c_str(), W_OK | R_OK) == 0))
     	goto valid_temp_directory;
@@ -187,15 +191,20 @@ GatewayUtils::Get_tempfile_template( char *file_template )
 
 valid_temp_directory:
 
+#ifdef WIN32
+	c.append("\\");
+#else
 	c.append("/");
+#endif
 	c.append(file_template);
 
-    char *temp = new char[c.length()];
+    char *temp = new char[c.length() + 1];
     strncpy(temp, c.c_str(), c.length());
-
+	temp[c.length()] = '\0';
+	
     return temp;
 }
-
+#endif
 void
 GatewayUtils::Get_type_from_disposition( const string &disp, string &type )
 {
