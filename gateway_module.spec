@@ -29,7 +29,7 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install INSTALL="install -p"
 
-rm $RPM_BUILD_ROOT%{_libdir}/bes/libnc_module.la
+rm $RPM_BUILD_ROOT%{_libdir}/bes/libgateway_module.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -44,7 +44,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/bes/modules
 %config(noreplace) %{_sysconfdir}/bes/modules/gateway.conf
 %{_libdir}/bes/libgateway_module.so
-%{_datadir}/hyrax/
 %doc COPYING COPYRIGHT NEWS README
 
 %changelog
