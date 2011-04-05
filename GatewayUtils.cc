@@ -58,6 +58,7 @@ map<string,string> GatewayUtils::MimeList ;
 string GatewayUtils::ProxyProtocol ;
 string GatewayUtils::ProxyHost ;
 int GatewayUtils::ProxyPort = 0 ;
+bool GatewayUtils::useInternalCache = false ;
 
 // Initialization routine for the gateway module for certain parameters
 // and keys, like the white list, the MimeTypes translation.
@@ -136,6 +137,25 @@ GatewayUtils::Initialize()
 	    GatewayUtils::ProxyProtocol = "http" ;
 	}
     }
+
+    found = false ;
+    key = Gateway_USE_INTERNAL_CACHE ;
+    string use_cache ;
+    TheBESKeys::TheKeys()->get_value( key, use_cache, found ) ;
+    if( found )
+    {
+	if ( use_cache == "true" || use_cache == "TRUE" || use_cache == "True"
+	    || use_cache == "yes" || use_cache == "YES" || use_cache == "Yes" )
+	    GatewayUtils::useInternalCache = true ;
+	else
+	    GatewayUtils::useInternalCache = false ;
+    }
+    else
+    {
+	// If not set, default to false. Assume squid or ...
+	GatewayUtils::useInternalCache = false ;
+    }
+
 }
 
 // Not used. There's a better version of this that returns a string in libdap.

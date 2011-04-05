@@ -52,6 +52,7 @@ public:
     static string		ProxyProtocol ;
     static string		ProxyHost ;
     static int			ProxyPort ;
+    static bool			useInternalCache ;
 
     static void			Initialize() ;
 #if 0

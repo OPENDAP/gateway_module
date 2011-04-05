@@ -10,6 +10,7 @@
 #define Gateway_PROXYPROTOCOL "Gateway.ProxyProtocol"
 #define Gateway_PROXYHOST "Gateway.ProxyHost"
 #define Gateway_PROXYPORT "Gateway.ProxyPort"
+#define Gateway_USE_INTERNAL_CACHE "Gateway.UseInternalCache"
 
 #endif // E_GatewayResponseNames_H
 
