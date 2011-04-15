@@ -50,7 +50,7 @@ Gateway.ProxyPort=
 * Using Squid. Squid makes a great cache for the gateway. In our
   testing we have  used Squid only for services running on port 80.
 
-* Using Squid on OS/X. If you're uisng OS/X to run Hyrax, the easiest
+* Using Squid on OS/X. If you're using OS/X to run Hyrax, the easiest
   Squid port is SquidMan (http://web.me.com/adg/squidman/index.html).
   We tested version SquidMan 3.0 (Squid 3.1.1). Run the SquidMan
   application and under Preferences... General set the port to
