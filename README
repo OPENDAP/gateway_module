@@ -43,6 +43,34 @@ Gateway.MimeTypes+=h5:application/x-hdf5
 proxy server that must be used to make the remote request, and the
 port to use.
 
+Gateway.ProxyProtocol= 
 Gateway.ProxyHost=
 Gateway.ProxyPort=
+
+* Using Squid. Squid makes a great cache for the gateway. In our
+  testing we have  used Squid only for services running on port 80.
+
+* Using Squid on OS/X. If you're uisng OS/X to run Hyrax, the easiest
+  Squid port is SquidMan (http://web.me.com/adg/squidman/index.html).
+  We tested version SquidMan 3.0 (Squid 3.1.1). Run the SquidMan
+  application and under Preferences... General set the port to
+  something like 3218, the cache size to something big (16GB) and
+  Maximum object size to 256M. Click 'Save' and you're almost done. 
+
+  Now in the gateway.conf file, set the proxy parameters like so:
+
+      Gateway.ProxyProtocol=http
+      Gateway.ProxyHost=localhost
+      Gateway.ProxyPort=3218
+
+  assuming you're running both Squid and Hyrax on the same host.
+
+  Restart the BES and you're all set. 
+
+  Make some requests using the gateway
+  (http://localhost/opendap/gateway) and click on SquidMan's 'Access
+  Log' button to see the caching at work. The first access, which
+  fetches the data, will say 'DIRECT/<ip number>' while cache hits
+  will be labeled 'NONE/-'.
+
 
