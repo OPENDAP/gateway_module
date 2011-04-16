@@ -107,14 +107,23 @@ GatewayRequest::make_request( const string &url, string &type )
 
     // A remote request is successful if we get data or if there is a
     // failed response in the http header.
-    if( response->get_status() != 200 )
+    if( response->get_status() != 200 && response->get_status() != 304 )
     {
-	BESDEBUG( "gateway", " request FAILED" << endl );
+	BESDEBUG( "gateway", " request FAILED with status "
+			     << response->get_status() << endl );
 
 	// get the error information from the temporary file
 	string err ;
-	BESDEBUG( "gateway", " reading text error" << endl );
-	GatewayError::read_error( response->get_file(), err, url ) ;
+	try
+	{
+	    BESDEBUG( "gateway", " reading text error from response file "
+				 << response->get_file() << endl );
+	    GatewayError::read_error( response->get_file(), err, url ) ;
+	}
+	catch( ... )
+	{
+	    err += "Unable to load the error text" ;
+	}
 
 	// toss the response
 	delete response ;
@@ -158,6 +167,9 @@ GatewayRequest::make_request( const string &url, string &type )
 	    // Content disposition exists, grab the filename
 	    // attribute
 	    GatewayUtils::Get_type_from_disposition( disp, type ) ;
+	    BESDEBUG( "gateway", "Looked at disposition " << disp
+	                         << " for type, returned \"" << type
+				 << "\"" << endl ) ;
 	}
 
 	// still haven't figured out the type. Check the content-type
@@ -167,6 +179,9 @@ GatewayRequest::make_request( const string &url, string &type )
 	if( type.empty() && !ctype.empty() )
 	{
 	    GatewayUtils::Get_type_from_content_type( ctype, type ) ;
+	    BESDEBUG( "gateway", "Looked at content type " << ctype
+	                         << " for type, returned \"" << type
+				 << "\"" << endl ) ;
 	}
 
 	// still haven't figured out the type. Now check the actual URL
@@ -174,6 +189,9 @@ GatewayRequest::make_request( const string &url, string &type )
 	if( type.empty() )
 	{
 	    GatewayUtils::Get_type_from_url( url, type ) ;
+	    BESDEBUG( "gateway", "Looked at url " << url
+	                         << " for type, returned \"" << type
+				 << "\"" << endl ) ;
 	}
 
 	// still couldn't figure it out ... throw an exception

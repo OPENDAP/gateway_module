@@ -96,4 +96,3 @@ Dataset {
     Float64 time_bnds[time = 240][tbnd = 2];
     String time_written[time = 240];
 } b30.004.cam2.h0.FICE_zav.0100-01_cat_0119-12.nc;
-

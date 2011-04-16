@@ -47,6 +47,7 @@
 #include <TheBESKeys.h>
 #include <BESInternalError.h>
 #include <BESSyntaxUserError.h>
+#include <BESDebug.h>
 
 #include <GNURegex.h>
 #include <util.h>
@@ -278,6 +279,9 @@ GatewayUtils::Get_type_from_disposition( const string &disp, string &type )
 		BESCatalogUtils::type_reg match = (*i) ;
 		try
 		{
+		    BESDEBUG( "gateway", "  Comparing disp filename "
+					 << filename << " against expr "
+					 << match.reg << endl ) ;
 		    BESRegex reg_expr( match.reg.c_str() ) ;
 		    if( reg_expr.match( filename.c_str(),
 					filename.length() )
@@ -308,6 +312,9 @@ GatewayUtils::Get_type_from_content_type( const string &ctype, string &type )
     bool done = false ;
     for( ; i != e && !done; i++ )
     {
+	BESDEBUG( "gateway", "  Comparing content type "
+			     << ctype << " against mime list element "
+			     << (*i).second << endl ) ;
 	if( (*i).second == ctype )
 	{
 	    type = (*i).first ;
@@ -332,6 +339,9 @@ GatewayUtils::Get_type_from_url( const string &url, string &type )
 	BESCatalogUtils::type_reg match = (*i) ;
 	try
 	{
+	    BESDEBUG( "gateway", "  Comparing url " << url
+				 << " against type match expr "
+				 << match.reg << endl ) ;
 	    BESRegex reg_expr( match.reg.c_str() ) ;
 	    if( reg_expr.match( url.c_str(),
 				url.length() )

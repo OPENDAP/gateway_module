@@ -30,8 +30,8 @@
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "GatewayError.h"
 
