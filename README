@@ -20,6 +20,9 @@ that you first install the bes, and that dap-server gets installed too.
 Finally, every time you install or reinstall handlers, make sure to restart
 the BES and OLFS.
 
+See also the online documentation for this handler at
+http://docs.opendap.org/index.php/BES_-_Modules_-_Gateway_Module
+
 Special options supported by the handler: 
 * Gateway.Whitelist - provides a list of URL of the form
     protocol://host.domain:port
@@ -49,6 +52,20 @@ Gateway.ProxyPort=
 
 * Using Squid. Squid makes a great cache for the gateway. In our
   testing we have  used Squid only for services running on port 80.
+  
+* Squid, in its default configuration, typically does not cache dynamic
+  content when the responses lack cache-control headers (e.g., Expires:).
+  To work-around this, look for the 'refresh_pattern' lines in the default
+  squid configuration file and change
+  
+      refresh_pattern -i (/cgi-bin/|\?) 0  0% 0
+
+  to
+     
+      refresh_pattern -i (/cgi-bin/|\?) 1440  20% 10080
+      
+  Of course this assumes that the service you're referencing uses 'cgi-bin'
+  or '?' in the URL; edit the pattern to match your case if need be.
 
 * Using Squid on OS/X. If you're using OS/X to run Hyrax, the easiest
   Squid port is SquidMan (http://web.me.com/adg/squidman/index.html).
