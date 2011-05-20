@@ -77,7 +77,7 @@ GatewayRequest::make_request( const string &url, string &type )
     rcr->set_proxy_server_port( GatewayUtils::ProxyPort ) ;
     // GatewayUtils::useInternalCache defaults to false; use squid...
     rcr->set_use_cache( GatewayUtils::useInternalCache ) ;
-    HTTPConnect connect( RCReader::instance() ) ;
+    HTTPConnect connect( rcr ) ;
     connect.set_cache_enabled( GatewayUtils::useInternalCache ) ;
 
     HTTPResponse *response = 0 ;
