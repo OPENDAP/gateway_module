@@ -57,14 +57,21 @@ GatewayContainer::GatewayContainer( const string &sym_name,
     : BESContainer( sym_name, real_name, type ), _response( 0 )
 {
     if( type.empty() ) set_container_type( "gateway" ) ;
+
+    BESUtil::url url_parts ;
+    BESUtil::url_explode( real_name, url_parts ) ;
+    url_parts.uname = "" ;
+    url_parts.psswd = "" ;
+    string use_real_name = BESUtil::url_create( url_parts ) ;
+
     vector<string>::const_iterator i = GatewayUtils::WhiteList.begin() ;
     vector<string>::const_iterator e = GatewayUtils::WhiteList.end() ;
     bool done = false ;
     for( ; i != e && !done; i++ )
     {
-	if( (*i).length() <= real_name.length() )
+	if( (*i).length() <= use_real_name.length() )
 	{
-	    if( real_name.substr( 0, (*i).length() ) == (*i) )
+	    if( use_real_name.substr( 0, (*i).length() ) == (*i) )
 	    {
 		done = true ;
 	    }
@@ -73,7 +80,8 @@ GatewayContainer::GatewayContainer( const string &sym_name,
     if( !done )
     {
 	string err = (string)"The specified URL " + real_name +
-	             " does not match any of the accessible services." ;
+	             " does not match any of the accessible services in" +
+		     " the white list." ;
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 }
