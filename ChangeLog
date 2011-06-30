@@ -1,0 +1,265 @@
+2011-04-20  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 release
+
+2011-04-19  James Gallagher <jgallagher@opendap.org>
+
+	Added words about dynamic content and squid
+
+2011-04-16  Patrick West <pwest@ucar.edu>
+
+	When error, but partial response, issue with writing binary to XML
+	document. Still not quite fixed, but better. Also checking for
+	304, not just 200 on response status. Added more debug for
+	checking response type.
+	
+	M    GatewayRequest.cc
+	M    GatewayError.cc
+	M    bes-testsuite/gateway/test.00.bescmd.baseline
+	M    bes-testsuite/gateway/test.01.bescmd.baseline
+	M    GatewayUtils.cc
+
+2011-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Spelling
+
+2011-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added words about Squid
+
+2011-04-08  James Gallagher <jgallagher@opendap.org>
+
+	Build fixes for	h 1.7 osx meta package
+
+	M    config.h.in
+
+2011-04-05  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for caching - again. The libdap cache is hosed until we can
+	find time/$ to repair its operation when several processes try to
+	use it at the same time. Instead use squid for caching!
+
+	M    GatewayResponseNames.h
+	M    GatewayRequest.cc
+	M    GatewayUtils.cc
+	M    GatewayUtils.h
+
+2011-04-04  James Gallagher <jgallagher@opendap.org>
+
+	Modified spec file,; now works
+
+	M    gateway_module.spec
+	M    config.h.in
+
+2011-03-28  James Gallagher <jgallagher@opendap.org>
+
+	1.7RC1
+
+2011-03-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: Added automated version numbers to OSX Package builds
+
+2011-03-10  James Gallagher <jgallagher@opendap.org>
+
+	Fixed rpm targets (Makefile.am)
+
+2011-03-03  Patrick West <pwest@ucar.edu>
+
+	whitelist defaults to localhost
+	M    gateway.conf.in
+
+2011-03-03  Patrick West <pwest@ucar.edu>
+
+	Caching works
+	M    GatewayContainer.cc
+	M    GatewayRequest.cc
+
+2011-03-01  Patrick West <pwest@ucar.edu>
+
+	Includes for strncpy and getenv
+	M    GatewayUtils.cc
+
+2011-02-28  Patrick West <pwest@ucar.edu>
+
+	distcheck now works
+	M    Makefile.am
+
+2011-02-28  Patrick West <pwest@ucar.edu>
+
+	Disabling cache for now
+	M    gateway.conf.in
+	M    GatewayRequest.cc
+
+2011-02-28  Patrick West <pwest@ucar.edu>
+
+	Turned on caching. Removed unneeded static functions in the request
+	handler.
+	M    GatewayRequestHandler.cc
+	M    GatewayRequest.cc
+	M    GatewayRequestHandler.h
+	M    INSTALL
+	M    Makefile.am
+
+2011-02-20  Patrick West <pwest@ucar.edu>
+
+	Added Protocol configuration for proxy
+	M    gateway.conf.in
+	M    GatewayResponseNames.h
+	M    GatewayRequest.cc
+	M    GatewayUtils.cc
+	M    GatewayUtils.h
+
+2011-02-18  Patrick West <pwest@ucar.edu>
+
+	Added proxy host and port to configuration.
+	M    GatewayResponseNames.h
+	M    gateway.conf.in
+	M    GatewayRequest.cc
+	M    GatewayUtils.cc
+	M    GatewayUtils.h
+
+2011-02-18  Patrick West <pwest@ucar.edu>
+
+	Updating version information
+	M    OSX_Resources/InstallationCheck.proto
+	M    OSX_Resources/Info.plist.proto
+	M    OSX_Resources/InstallationCheck.strings
+
+2011-02-18  Patrick West <pwest@ucar.edu>
+
+	Preparing for release
+	M    NEWS
+	A    INSTALL
+	M    README
+	M    gateway_module.spec
+
+2011-02-14  Patrick West <pwest@ucar.edu>
+
+	Corrected problems of checking for Content-Disposition and
+	Content-Type. Checking for variations on the disposition line as
+	well.
+	
+	M    GatewayRequest.cc
+	M    GatewayUtils.cc
+
+2011-02-13  Patrick West <pwest@ucar.edu>
+
+	M    bes-testsuite/package.m4
+
+2011-02-11  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2011-02-11  Patrick West <pwest@ucar.edu>
+
+	Up to 0.3 now.
+	M    configure.ac
+
+2011-02-10  Patrick West <pwest@ucar.edu>
+
+	generalized check for content-disposition. Added check for content-type
+	if disppsition is not available. Added check of url against type match.
+	added bes-testsuite that relies on dapreader in bes.
+	M    GatewayContainer.cc
+	M    GatewayResponseNames.h
+	M    gateway.conf.in
+	M    GatewayModule.cc
+	M    GatewayRequest.cc
+	A    bes-testsuite
+	A    bes-testsuite/gateway
+	A    bes-testsuite/gateway/test.00.bescmd
+	A    bes-testsuite/gateway/test.00.bescmd.baseline
+	A    bes-testsuite/gateway/test.01.bescmd
+	A    bes-testsuite/gateway/test.01.bescmd.baseline
+	A    bes-testsuite/gateway/test.02.bescmd
+	A    bes-testsuite/gateway/test.02.bescmd.baseline
+	A    bes-testsuite/gateway_handlerTest.at
+	A    bes-testsuite/bes.conf.in
+	A    bes-testsuite/atlocal.in
+	A    bes-testsuite/config
+	A    bes-testsuite/config/unix.exp
+	A    bes-testsuite/Makefile.am
+	A    bes-testsuite/package.m4
+	M    configure.ac
+	M    GatewayUtils.cc
+	M    GatewayUtils.h
+	M    Makefile.am
+
+2011-02-10  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2011-02-09  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	shrew: More updates to production rules
+
+2011-02-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: Fixed OSX package maker targets
+
+2011-02-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2011-02-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2011-02-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: In the gateway.conf.in I fixed the character
+	capitalization in the commented out white list examples.
+
+2011-02-02  Patrick West <pwest@ucar.edu>
+
+	Removed reference to WCS module
+	M    GatewayError.h
+
+2011-02-02  Patrick West <pwest@ucar.edu>
+
+	Added white list capabilities to the Gateway module. Only URLs
+	that match the items in the whitelist will be allowed. No regular
+	expression matching, just checking the beginning of the passed URL
+	to the values of the whitelist.
+	
+	M    GatewayContainer.cc
+	M    GatewayResponseNames.h
+	M    gateway.conf.in
+	M    GatewayModule.cc
+
+2011-01-29  Patrick West <pwest@ucar.edu>
+
+	Removed bin script that is no longer used.
+	M    Makefile.am
+
+2011-01-29  Patrick West <pwest@ucar.edu>
+
+	First release. Initial simple tests work.
+	A    GatewayContainerStorage.h
+	A    conf
+	A    conf/pkg.m4
+	A    conf/acinclude.m4
+	A    conf/bes.m4
+	A    conf/libdap.m4
+	A    GatewayContainer.cc
+	A    GatewayContainer.h
+	A    GatewayResponseNames.h
+	A    gateway.conf.in
+	A    GatewayModule.cc
+	A    GatewayRequestHandler.cc
+	A    GatewayModule.h
+	A    README
+	A    GatewayRequest.cc
+	A    GatewayRequestHandler.h
+	A    gateway_module.spec
+	A    GatewayError.cc
+	A    config.h.in
+	A    GatewayRequest.h
+	A    GatewayError.h
+	A    configure.ac
+	A    GatewayUtils.cc
+	A    COPYING
+	A    COPYRIGHT
+	A    GatewayUtils.h
+	A    Makefile.am
+	A    NEWS
+	A    GatewayContainerStorage.cc
+
+2011-01-29  Patrick West <pwest@ucar.edu>
+
+	New gateway module that passes through a URL request to a remote
+	server, determines the type of the response (netcdf, hdf4, hdf5,
+	error, etc..) and passes the response off to another request
+	handler. A http://scm.opendap.org/svn/trunk/gateway_module
