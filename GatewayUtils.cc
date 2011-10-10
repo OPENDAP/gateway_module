@@ -61,6 +61,8 @@ string GatewayUtils::ProxyHost ;
 int GatewayUtils::ProxyPort = 0 ;
 bool GatewayUtils::useInternalCache = false ;
 
+string GatewayUtils::NoProxyRegex ;
+
 // Initialization routine for the gateway module for certain parameters
 // and keys, like the white list, the MimeTypes translation.
 void
@@ -157,6 +159,9 @@ GatewayUtils::Initialize()
 	GatewayUtils::useInternalCache = false ;
     }
 
+    // Grab the value for the NoProxy regex; empty if there is none.
+    found = false; // Not used
+    TheBESKeys::TheKeys()->get_value("Gateway.NoProxy", GatewayUtils::NoProxyRegex, found);
 }
 
 // Not used. There's a better version of this that returns a string in libdap.
