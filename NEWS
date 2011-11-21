@@ -1,6 +1,11 @@
 
 $Id: NEWS $
 
+Version 1.1.0
+
+Added NoProxy switch to the handler's conf file so that it can be configured
+to _not_ use the proxy server for certain hosts (e.g., localhost).
+
 Version 1.0.0
 
 Buld fixes.
