@@ -1,6 +1,4 @@
 
-$Id: NEWS $
-
 Version 1.1.0
 
 Added NoProxy switch to the handler's conf file so that it can be configured

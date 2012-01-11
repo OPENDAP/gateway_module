@@ -1,6 +1,4 @@
 
-	$Id: INSTALL 11941 2005-08-15 18:02:54Z jimg $
-
 ---------------------------------------------------------------------------
 
 BUILDING THE SOFTWARE
@@ -22,8 +20,7 @@ BUILDING THE SOFTWARE
   1. Type `./configure' at the system prompt. On some systems you may have
      to type `sh configure'.
 
-  2. Type `make' to build the software, `make check' to run the tests. You
-     must have DejaGNU to run `make check.'
+  2. Type `make' to build the software, `make check' to run the tests.
 
   3. Type `make install' to install the software. The package installs
      in /usr/local/ by default; use --prefix to change that.
