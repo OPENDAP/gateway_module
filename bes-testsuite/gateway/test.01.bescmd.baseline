@@ -14,6 +14,7 @@ Dataset {
       Maps:
         Float64 time[time = 240];
     } date;
+    String date_written[time = 240];
     Grid {
       Array:
         Int32 datesec[time = 240];
@@ -50,6 +51,12 @@ Dataset {
       Maps:
         Float64 lev[lev = 26];
     } hybm;
+    Float64 ilev[ilev = 27];
+    Float64 isccp_prs[isccp_prs = 7];
+    Float64 isccp_prstau[isccp_prstau = 49];
+    Float64 isccp_tau[isccp_tau = 7];
+    Float64 lat[lat = 64];
+    Float64 lev[lev = 26];
     Float64 lon;
     Int32 mdt;
     Int32 nbdate;
@@ -83,16 +90,13 @@ Dataset {
     Int32 ntrk;
     Int32 ntrm;
     Int32 ntrn;
+    Float64 time[time = 240];
+    Float64 time_bnds[time = 240][tbnd = 2];
+    String time_written[time = 240];
     Grid {
       Array:
         Int32 wnummax[lat = 64];
       Maps:
         Float64 lat[lat = 64];
     } wnummax;
-    String date_written[time = 240];
-    Float64 isccp_prs[isccp_prs = 7];
-    Float64 isccp_prstau[isccp_prstau = 49];
-    Float64 isccp_tau[isccp_tau = 7];
-    Float64 time_bnds[time = 240][tbnd = 2];
-    String time_written[time = 240];
 } b30.004.cam2.h0.FICE_zav.0100-01_cat_0119-12.nc;
