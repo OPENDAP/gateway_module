@@ -54,6 +54,8 @@ public:
     static int			ProxyPort ;
     static bool			useInternalCache ;
 
+    static string       NoProxyRegex ;
+
     static void			Initialize() ;
 #if 0
     static char *		Get_tempfile_template( char *file_template ) ;

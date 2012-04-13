@@ -1,6 +1,6 @@
 Summary:         Gateway module for the OPeNDAP Data server
 Name:            gateway_module
-Version:         1.0.0
+Version:         1.1.0
 Release:         1
 License:         LGPLv2+
 Group:           System Environment/Daemons 

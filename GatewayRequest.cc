@@ -33,6 +33,7 @@
 #include <HTTPConnect.h>
 #include <RCReader.h>
 #include <Error.h>
+#include <GNURegex.h>
 
 using namespace libdap ;
 
@@ -72,9 +73,27 @@ GatewayRequest::make_request( const string &url, string &type )
     BESDEBUG( "gateway", "  request = " << url << endl );
 
     RCReader *rcr = RCReader::instance() ;
-    rcr->set_proxy_server_protocol( GatewayUtils::ProxyProtocol ) ;
-    rcr->set_proxy_server_host( GatewayUtils::ProxyHost ) ;
-    rcr->set_proxy_server_port( GatewayUtils::ProxyPort ) ;
+
+    // Don't set up the proxy server for URLs that match the 'NoProxy'
+    // regex set in the gateway.conf file.
+    bool configure_proxy = true;
+    // Don't create the regex if the string is empty
+    if (!GatewayUtils::NoProxyRegex.empty())
+    {
+        Regex r(GatewayUtils::NoProxyRegex.c_str());
+        if (r.match(url.c_str(), url.length()) != -1) {
+            BESDEBUG( "gateway", "Gateway found NoProxy match. Regex: " <<  GatewayUtils::NoProxyRegex <<  "; Url: " << url << endl );
+            configure_proxy = false;
+        }
+    }
+
+    if (configure_proxy)
+    {
+        rcr->set_proxy_server_protocol(GatewayUtils::ProxyProtocol);
+        rcr->set_proxy_server_host(GatewayUtils::ProxyHost);
+        rcr->set_proxy_server_port(GatewayUtils::ProxyPort);
+    }
+
     // GatewayUtils::useInternalCache defaults to false; use squid...
     rcr->set_use_cache( GatewayUtils::useInternalCache ) ;
     HTTPConnect connect( rcr ) ;
