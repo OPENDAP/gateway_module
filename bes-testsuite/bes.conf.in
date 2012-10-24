@@ -116,7 +116,7 @@ BES.Catalog.catalog.TypeMatch=dapreader:.*.das(.bz2|.gz|.Z)?$;dapreader:.*.dods(
 # then the Exclude parameter is applied. All collections of nodes are shown.
 # In the default values below, all nodes with the file extension .nc
 # are included (the Include parameter) except those that begin with a dot
-# (the Exclud parameter).
+# (the Exclude parameter).
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
