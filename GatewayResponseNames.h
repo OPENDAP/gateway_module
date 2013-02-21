@@ -13,4 +13,3 @@
 #define Gateway_USE_INTERNAL_CACHE "Gateway.UseInternalCache"
 
 #endif // E_GatewayResponseNames_H
-

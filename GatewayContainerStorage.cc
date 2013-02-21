@@ -40,8 +40,8 @@
  * @param n name of this persistent store
  * @see GatewayContainer
  */
-GatewayContainerStorage::GatewayContainerStorage( const string &n )
-    : BESContainerStorageVolatile( n )
+GatewayContainerStorage::GatewayContainerStorage(const string &n) :
+        BESContainerStorageVolatile(n)
 {
 }
 
@@ -56,13 +56,10 @@ GatewayContainerStorage::~GatewayContainerStorage()
  * @param type ignored. The type of the target response is determined by the
  * request response, or could be passed in
  */
-void
-GatewayContainerStorage::add_container( const string &s_name,
-				        const string &r_name,
-				        const string &type )
+void GatewayContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
 {
-    BESContainer *c = new GatewayContainer( s_name, r_name, type ) ;
-    BESContainerStorageVolatile::add_container( c ) ;
+    BESContainer *c = new GatewayContainer(s_name, r_name, type);
+    BESContainerStorageVolatile::add_container(c);
 }
 
 /** @brief dumps information about this object
@@ -72,13 +69,11 @@ GatewayContainerStorage::add_container( const string &s_name,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-GatewayContainerStorage::dump( ostream &strm ) const
+void GatewayContainerStorage::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "GatewayContainerStorage::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESContainerStorageVolatile::dump( strm ) ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "GatewayContainerStorage::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESContainerStorageVolatile::dump(strm);
+    BESIndent::UnIndent();
 }
 

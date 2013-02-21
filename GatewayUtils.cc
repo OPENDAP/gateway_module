@@ -52,111 +52,96 @@
 #include <GNURegex.h>
 #include <util.h>
 
-using namespace libdap ;
+using namespace libdap;
 
-vector<string> GatewayUtils::WhiteList ;
-map<string,string> GatewayUtils::MimeList ;
-string GatewayUtils::ProxyProtocol ;
-string GatewayUtils::ProxyHost ;
-int GatewayUtils::ProxyPort = 0 ;
-bool GatewayUtils::useInternalCache = false ;
+vector<string> GatewayUtils::WhiteList;
+map<string, string> GatewayUtils::MimeList;
+string GatewayUtils::ProxyProtocol;
+string GatewayUtils::ProxyHost;
+int GatewayUtils::ProxyPort = 0;
+bool GatewayUtils::useInternalCache = false;
 
-string GatewayUtils::NoProxyRegex ;
+string GatewayUtils::NoProxyRegex;
 
 // Initialization routine for the gateway module for certain parameters
 // and keys, like the white list, the MimeTypes translation.
-void
-GatewayUtils::Initialize()
+void GatewayUtils::Initialize()
 {
     // Whitelist - list of domain that the gateway is allowed to
     // communicate with.
-    bool found = false ;
-    string key = Gateway_WHITELIST ;
-    TheBESKeys::TheKeys()->get_values( key, WhiteList, found ) ;
-    if( !found || WhiteList.size() == 0 )
-    {
-	string err = (string)"The parameter " + Gateway_WHITELIST +
-			     " is not set or has no values in the gateway" +
-			     " configuration file" ;
-	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	
+    bool found = false;
+    string key = Gateway_WHITELIST;
+    TheBESKeys::TheKeys()->get_values(key, WhiteList, found);
+    if (!found || WhiteList.size() == 0) {
+        string err = (string) "The parameter " + Gateway_WHITELIST + " is not set or has no values in the gateway"
+                + " configuration file";
+        throw BESSyntaxUserError(err, __FILE__, __LINE__);
+
     }
 
     // MimeTypes - translate from a mime type to a module name
-    found = false ;
-    key = Gateway_MIMELIST ;
-    vector<string> vals ;
-    TheBESKeys::TheKeys()->get_values( key, vals, found ) ;
-    if( found && vals.size() )
-    {
-	vector<string>::iterator i = vals.begin() ;
-	vector<string>::iterator e = vals.end() ;
-	for( ; i != e; i++ )
-	{
-	    size_t colon = (*i).find( ":" ) ;
-	    if( colon == string::npos )
-	    {
-		string err = (string)"Malformed " + Gateway_MIMELIST + " "
-		             + (*i)
-			     + " specified in the gateway configuration" ;
-		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    }
-	    string mod = (*i).substr( 0, colon ) ;
-	    string mime = (*i).substr( colon+1 ) ;
-	    MimeList[mod] = mime ;
-	}
+    found = false;
+    key = Gateway_MIMELIST;
+    vector<string> vals;
+    TheBESKeys::TheKeys()->get_values(key, vals, found);
+    if (found && vals.size()) {
+        vector<string>::iterator i = vals.begin();
+        vector<string>::iterator e = vals.end();
+        for (; i != e; i++) {
+            size_t colon = (*i).find(":");
+            if (colon == string::npos) {
+                string err = (string) "Malformed " + Gateway_MIMELIST + " " + (*i)
+                        + " specified in the gateway configuration";
+                throw BESSyntaxUserError(err, __FILE__, __LINE__);
+            }
+            string mod = (*i).substr(0, colon);
+            string mime = (*i).substr(colon + 1);
+            MimeList[mod] = mime;
+        }
     }
 
-    found = false ;
-    key = Gateway_PROXYHOST ;
-    TheBESKeys::TheKeys()->get_value( key, GatewayUtils::ProxyHost, found ) ;
-    if( found && !GatewayUtils::ProxyHost.empty() )
-    {
-	// if the proxy host is set, then check to see if the port is
-	// set. Does not need to be.
-	found = false ;
-	key = Gateway_PROXYPORT ;
-	string port ;
-	TheBESKeys::TheKeys()->get_value( key, port, found ) ;
-	if( found && !port.empty() )
-	{
-	    GatewayUtils::ProxyPort = atoi( port.c_str() ) ;
-	    if( !GatewayUtils::ProxyPort )
-	    {
-		string err = (string)"gateway proxy host specified,"
-			     + " but proxy port specified is invalid" ;
-		throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    }
-	}
+    found = false;
+    key = Gateway_PROXYHOST;
+    TheBESKeys::TheKeys()->get_value(key, GatewayUtils::ProxyHost, found);
+    if (found && !GatewayUtils::ProxyHost.empty()) {
+        // if the proxy host is set, then check to see if the port is
+        // set. Does not need to be.
+        found = false;
+        key = Gateway_PROXYPORT;
+        string port;
+        TheBESKeys::TheKeys()->get_value(key, port, found);
+        if (found && !port.empty()) {
+            GatewayUtils::ProxyPort = atoi(port.c_str());
+            if (!GatewayUtils::ProxyPort) {
+                string err = (string) "gateway proxy host specified," + " but proxy port specified is invalid";
+                throw BESSyntaxUserError(err, __FILE__, __LINE__);
+            }
+        }
 
-	// find the protocol to use for the proxy server. If none set,
-	// default to http
-	found = false ;
-	key = Gateway_PROXYPROTOCOL ;
-	TheBESKeys::TheKeys()->get_value( key, GatewayUtils::ProxyProtocol,
-					  found ) ;
-	if( !found || GatewayUtils::ProxyProtocol.empty() )
-	{
-	    GatewayUtils::ProxyProtocol = "http" ;
-	}
+        // find the protocol to use for the proxy server. If none set,
+        // default to http
+        found = false;
+        key = Gateway_PROXYPROTOCOL;
+        TheBESKeys::TheKeys()->get_value(key, GatewayUtils::ProxyProtocol, found);
+        if (!found || GatewayUtils::ProxyProtocol.empty()) {
+            GatewayUtils::ProxyProtocol = "http";
+        }
     }
 
-    found = false ;
-    key = Gateway_USE_INTERNAL_CACHE ;
-    string use_cache ;
-    TheBESKeys::TheKeys()->get_value( key, use_cache, found ) ;
-    if( found )
-    {
-	if ( use_cache == "true" || use_cache == "TRUE" || use_cache == "True"
-	    || use_cache == "yes" || use_cache == "YES" || use_cache == "Yes" )
-	    GatewayUtils::useInternalCache = true ;
-	else
-	    GatewayUtils::useInternalCache = false ;
+    found = false;
+    key = Gateway_USE_INTERNAL_CACHE;
+    string use_cache;
+    TheBESKeys::TheKeys()->get_value(key, use_cache, found);
+    if (found) {
+        if (use_cache == "true" || use_cache == "TRUE" || use_cache == "True" || use_cache == "yes"
+                || use_cache == "YES" || use_cache == "Yes")
+            GatewayUtils::useInternalCache = true;
+        else
+            GatewayUtils::useInternalCache = false;
     }
-    else
-    {
-	// If not set, default to false. Assume squid or ...
-	GatewayUtils::useInternalCache = false ;
+    else {
+        // If not set, default to false. Assume squid or ...
+        GatewayUtils::useInternalCache = false;
     }
 
     // Grab the value for the NoProxy regex; empty if there is none.
@@ -190,180 +175,143 @@ GatewayUtils::Get_tempfile_template( char *file_template )
 
     string c = getenv("TEMP") ? getenv("TEMP") : "";
     if (!c.empty() && directory.match(c.c_str(), c.length()) && (access(c.c_str(), 6) == 0))
-    	goto valid_temp_directory;
+    goto valid_temp_directory;
 
     c = getenv("TMP") ? getenv("TMP") : "";
     if (!c.empty() && directory.match(c.c_str(), c.length()) && (access(c.c_str(), 6) == 0))
-    	goto valid_temp_directory;
+    goto valid_temp_directory;
 #else
-	// white list for a directory
-	Regex directory("[-a-zA-Z0-9_/]*");
+    // white list for a directory
+    Regex directory("[-a-zA-Z0-9_/]*");
 
-	string c = getenv("TMPDIR") ? getenv("TMPDIR") : "";
-	if (!c.empty() && directory.match(c.c_str(), c.length())
-		&& (access(c.c_str(), W_OK | R_OK) == 0))
-    	goto valid_temp_directory;
+    string c = getenv("TMPDIR") ? getenv("TMPDIR") : "";
+    if (!c.empty() && directory.match(c.c_str(), c.length())
+            && (access(c.c_str(), W_OK | R_OK) == 0))
+    goto valid_temp_directory;
 
 #ifdef P_tmpdir
-	if (access(P_tmpdir, W_OK | R_OK) == 0) {
+    if (access(P_tmpdir, W_OK | R_OK) == 0) {
         c = P_tmpdir;
         goto valid_temp_directory;
-	}
+    }
 #endif
 
 #endif  // WIN32
-
     c = ".";
 
-valid_temp_directory:
+    valid_temp_directory:
 
 #ifdef WIN32
-	c.append("\\");
+    c.append("\\");
 #else
-	c.append("/");
+    c.append("/");
 #endif
-	c.append(file_template);
+    c.append(file_template);
 
     char *temp = new char[c.length() + 1];
     strncpy(temp, c.c_str(), c.length());
-	temp[c.length()] = '\0';
-	
+    temp[c.length()] = '\0';
+
     return temp;
 }
 #endif
-void
-GatewayUtils::Get_type_from_disposition( const string &disp, string &type )
+void GatewayUtils::Get_type_from_disposition(const string &disp, string &type)
 {
-    size_t fnpos = disp.find( "filename" ) ;
-    if( fnpos != string::npos )
-    {
-	// Got the filename attribute, now get the
-	// filename, which is after the pound sign (#)
-	size_t pos = disp.find( "#", fnpos ) ;
-	if( pos == string::npos ) pos = disp.find( "=", fnpos ) ;
-	if( pos != string::npos )
-	{
-	    // Got the filename to the end of the
-	    // string, now get it to either the end of
-	    // the string or the start of the next
-	    // attribute
-	    string filename ;
-	    size_t sp = disp.find( " ", pos ) ;
-	    if( pos != string::npos )
-	    {
-		// space before the next attribute
-		filename = disp.substr( pos+1, sp-pos-1 ) ;
-	    }
-	    else
-	    {
-		// to the end of the string
-		filename = disp.substr( pos+1 ) ;
-	    }
+    size_t fnpos = disp.find("filename");
+    if (fnpos != string::npos) {
+        // Got the filename attribute, now get the
+        // filename, which is after the pound sign (#)
+        size_t pos = disp.find("#", fnpos);
+        if (pos == string::npos)
+            pos = disp.find("=", fnpos);
+        if (pos != string::npos) {
+            // Got the filename to the end of the
+            // string, now get it to either the end of
+            // the string or the start of the next
+            // attribute
+            string filename;
+            size_t sp = disp.find(" ", pos);
+            if (pos != string::npos) {
+                // space before the next attribute
+                filename = disp.substr(pos + 1, sp - pos - 1);
+            }
+            else {
+                // to the end of the string
+                filename = disp.substr(pos + 1);
+            }
 
-	    // now see if it's wrapped in quotes
-	    if( filename[0] == '"' )
-	    {
-		filename = filename.substr( 1 ) ;
-	    }
-	    if( filename[filename.length()-1] == '"' )
-	    {
-		filename = filename.substr( 0, filename.length() - 1 ) ;
-	    }
+            // now see if it's wrapped in quotes
+            if (filename[0] == '"') {
+                filename = filename.substr(1);
+            }
+            if (filename[filename.length() - 1] == '"') {
+                filename = filename.substr(0, filename.length() - 1);
+            }
 
-	    // we have the filename now, run it through
-	    // the type match to get the file type
-	    const BESCatalogUtils *utils =
-		    BESCatalogUtils::Utils( "catalog" ) ;
-	    BESCatalogUtils::match_citer i =
-		    utils->match_list_begin() ;
-	    BESCatalogUtils::match_citer ie =
-		    utils->match_list_end() ;
-	    bool done = false ;
-	    for( ; i != ie && !done; i++ )
-	    {
-		BESCatalogUtils::type_reg match = (*i) ;
-		try
-		{
-		    BESDEBUG( "gateway", "  Comparing disp filename "
-					 << filename << " against expr "
-					 << match.reg << endl ) ;
-		    BESRegex reg_expr( match.reg.c_str() ) ;
-		    if( reg_expr.match( filename.c_str(),
-					filename.length() )
-			== static_cast<int>(filename.length()) )
-		    {
-			type = match.type ;
-			done = true ;
-		    }
-		}
-		catch( Error &e )
-		{
-		    string serr = (string)"Unable to match data type, "
-			  + "malformed Catalog TypeMatch parameter " 
-			  + "in bes configuration file around " 
-			  + match.reg + ": " + e.get_error_message() ;
-		    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
-		}
-	    }
-	}
+            // we have the filename now, run it through
+            // the type match to get the file type
+            const BESCatalogUtils *utils = BESCatalogUtils::Utils("catalog");
+            BESCatalogUtils::match_citer i = utils->match_list_begin();
+            BESCatalogUtils::match_citer ie = utils->match_list_end();
+            bool done = false;
+            for (; i != ie && !done; i++) {
+                BESCatalogUtils::type_reg match = (*i);
+                try {
+                    BESDEBUG("gateway",
+                            "  Comparing disp filename " << filename << " against expr " << match.reg << endl);
+                    BESRegex reg_expr(match.reg.c_str());
+                    if (reg_expr.match(filename.c_str(), filename.length()) == static_cast<int>(filename.length())) {
+                        type = match.type;
+                        done = true;
+                    }
+                }
+                catch (Error &e) {
+                    string serr = (string) "Unable to match data type, " + "malformed Catalog TypeMatch parameter "
+                            + "in bes configuration file around " + match.reg + ": " + e.get_error_message();
+                    throw BESInternalError(serr, __FILE__, __LINE__);
+                }
+            }
+        }
     }
 }
 
-void
-GatewayUtils::Get_type_from_content_type( const string &ctype, string &type )
+void GatewayUtils::Get_type_from_content_type(const string &ctype, string &type)
 {
-    map<string,string>::iterator i = MimeList.begin() ;
-    map<string,string>::iterator e = MimeList.end() ;
-    bool done = false ;
-    for( ; i != e && !done; i++ )
-    {
-	BESDEBUG( "gateway", "  Comparing content type "
-			     << ctype << " against mime list element "
-			     << (*i).second << endl ) ;
-	if( (*i).second == ctype )
-	{
-	    type = (*i).first ;
-	    done = true ;
-	}
+    map<string, string>::iterator i = MimeList.begin();
+    map<string, string>::iterator e = MimeList.end();
+    bool done = false;
+    for (; i != e && !done; i++) {
+        BESDEBUG("gateway",
+                "  Comparing content type " << ctype << " against mime list element " << (*i).second << endl);
+        if ((*i).second == ctype) {
+            type = (*i).first;
+            done = true;
+        }
     }
 }
 
-void
-GatewayUtils::Get_type_from_url( const string &url, string &type )
+void GatewayUtils::Get_type_from_url(const string &url, string &type)
 {
     // just run the url through the type match from the configuration
-    const BESCatalogUtils *utils =
-	    BESCatalogUtils::Utils( "catalog" ) ;
-    BESCatalogUtils::match_citer i =
-	    utils->match_list_begin() ;
-    BESCatalogUtils::match_citer ie =
-	    utils->match_list_end() ;
-    bool done = false ;
-    for( ; i != ie && !done; i++ )
-    {
-	BESCatalogUtils::type_reg match = (*i) ;
-	try
-	{
-	    BESDEBUG( "gateway", "  Comparing url " << url
-				 << " against type match expr "
-				 << match.reg << endl ) ;
-	    BESRegex reg_expr( match.reg.c_str() ) ;
-	    if( reg_expr.match( url.c_str(),
-				url.length() )
-		== static_cast<int>(url.length()) )
-	    {
-		type = match.type ;
-		done = true ;
-	    }
-	}
-	catch( Error &e )
-	{
-	    string serr = (string)"Unable to match data type, "
-		  + "malformed Catalog TypeMatch parameter " 
-		  + "in bes configuration file around " 
-		  + match.reg + ": " + e.get_error_message() ;
-	    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
-	}
+    const BESCatalogUtils *utils = BESCatalogUtils::Utils("catalog");
+    BESCatalogUtils::match_citer i = utils->match_list_begin();
+    BESCatalogUtils::match_citer ie = utils->match_list_end();
+    bool done = false;
+    for (; i != ie && !done; i++) {
+        BESCatalogUtils::type_reg match = (*i);
+        try {
+            BESDEBUG("gateway", "  Comparing url " << url << " against type match expr " << match.reg << endl);
+            BESRegex reg_expr(match.reg.c_str());
+            if (reg_expr.match(url.c_str(), url.length()) == static_cast<int>(url.length())) {
+                type = match.type;
+                done = true;
+            }
+        }
+        catch (Error &e) {
+            string serr = (string) "Unable to match data type, " + "malformed Catalog TypeMatch parameter "
+                    + "in bes configuration file around " + match.reg + ": " + e.get_error_message();
+            throw BESInternalError(serr, __FILE__, __LINE__);
+        }
     }
 }
 

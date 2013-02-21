@@ -35,7 +35,7 @@
 
 #include <string>
 
-using std::string ;
+using std::string;
 
 /** @brief exception static functions to read error information from
  * remote response
@@ -43,13 +43,9 @@ using std::string ;
  * Two static methods are provided that can read the target response
  * file if an error occurred.
  */
-class GatewayError
-{
+class GatewayError {
 public:
-    static void		read_error( const string &filename,
-				    string &err,
-				    const string &url ) ;
+    static void read_error(const string &filename, string &err, const string &url);
 };
 
 #endif // GatewayError_h_ 
-

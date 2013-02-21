@@ -44,40 +44,33 @@
  * @param err return the error message in this variable
  * @param url the remote request URL
  */
-void
-GatewayError::read_error( const string &filename,
-		          string &err,
-		          const string &url )
+void GatewayError::read_error(const string &filename, string &err, const string &url)
 {
-    err = "Remote Request failed for url: " + url + " with error: " ;
+    err = "Remote Request failed for url: " + url + " with error: ";
 
     // The temporary file will contain the error information that we need to
     // report.
-    FILE *f = fopen( filename.c_str(), "r" ) ;
-    if( !f )
-    {
-	err = err + "Could not open the error file " + filename ;
-	return ;
+    FILE *f = fopen(filename.c_str(), "r");
+    if (!f) {
+        err = err + "Could not open the error file " + filename;
+        return;
     }
 
     // read from the file until there is no more to read
-    bool done = false ;
-    while( !done )
-    {
-	char buff[1025] ;
-	size_t bytes_read = fread( buff, 1, 1024, f ) ;
-	if( !bytes_read )
-	{
-	    done = true ;
-	}
-	else
-	{
-	    if( bytes_read >=0 && bytes_read <= 1024 )
-		buff[bytes_read] = '\0' ;
-	    err = err + buff ;
-	}
+    bool done = false;
+    while (!done) {
+        char buff[1025];
+        size_t bytes_read = fread(buff, 1, 1024, f);
+        if (!bytes_read) {
+            done = true;
+        }
+        else {
+            if (bytes_read >= 0 && bytes_read <= 1024)
+                buff[bytes_read] = '\0';
+            err = err + buff;
+        }
     }
 
-    fclose( f ) ;
+    fclose(f);
 }
 

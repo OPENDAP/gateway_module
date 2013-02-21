@@ -35,11 +35,11 @@
 
 #include <list>
 
-using std::list ;
+using std::list;
 
 #include "BESContainerStorageVolatile.h"
 
-class BESCatalogUtils ;
+class BESCatalogUtils;
 
 /** @brief implementation of BESContainerStorageVolatile that represents a
  * list of remote requests
@@ -51,18 +51,14 @@ class BESCatalogUtils ;
  * @see BESContainerStorageVolatile
  * @see GatewayContainer
  */
-class GatewayContainerStorage : public BESContainerStorageVolatile
-{
+class GatewayContainerStorage: public BESContainerStorageVolatile {
 public:
-    				GatewayContainerStorage( const string &n ) ;
-    virtual			~GatewayContainerStorage() ;
+    GatewayContainerStorage(const string &n);
+    virtual ~GatewayContainerStorage();
 
-    virtual void		add_container( const string &s_name,
-                                               const string &r_name,
-					       const string &type ) ;
+    virtual void add_container(const string &s_name, const string &r_name, const string &type);
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream &strm) const;
 };
 
 #endif // GatewayContainerStorage_h_
-

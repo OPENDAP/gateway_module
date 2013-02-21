@@ -35,21 +35,24 @@
 
 #include <string>
 
-using std::string ;
+using std::string;
 
 #include <HTTPResponse.h>
 
-using namespace libdap ;
+using namespace libdap;
 
 /** @brief knows how to make a remote request */
-class GatewayRequest
-{
+class GatewayRequest {
 public:
-    				GatewayRequest() {} ;
-				~GatewayRequest() {} ;
-    HTTPResponse *		make_request( const string &url,
-					      string &type ) ;
-} ;
+    GatewayRequest()
+    {
+    }
+    ;
+    ~GatewayRequest()
+    {
+    }
+    ;
+    HTTPResponse * make_request(const string &url, string &type);
+};
 
 #endif // I_GatewayRequest_H
-
