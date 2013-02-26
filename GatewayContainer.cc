@@ -36,10 +36,12 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <TheBESKeys.h>
+#include "BESCache3.h"
 
 #include "GatewayRequest.h"
 #include "GatewayUtils.h"
 #include "GatewayResponseNames.h"
+#include "RemoteHttpResource.h"
 
 /** @brief Creates an instances of GatewayContainer with symbolic name and real
  * name, which is the remote request.
@@ -51,9 +53,9 @@
  * @throws BESSyntaxUserError if the url does not validate
  * @see GatewayUtils
  */
-GatewayContainer::GatewayContainer(const string &sym_name, const string &real_name, const string &type) :
-        BESContainer(sym_name, real_name, type), _response(0)
-{
+GatewayContainer::GatewayContainer(const string &sym_name,
+        const string &real_name, const string &type) :
+        BESContainer(sym_name, real_name, type), _remoteResource(0) {
     if (type.empty())
         set_container_type("gateway");
 
@@ -73,46 +75,44 @@ GatewayContainer::GatewayContainer(const string &sym_name, const string &real_na
             }
         }
     }
-
     if (!done) {
-        string err = (string) "The specified URL " + real_name + " does not match any of the accessible services in"
+        string err = (string) "The specified URL " + real_name
+                + " does not match any of the accessible services in"
                 + " the white list.";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 }
 
 GatewayContainer::GatewayContainer(const GatewayContainer &copy_from) :
-        BESContainer(copy_from), _response(copy_from._response)
-{
+        BESContainer(copy_from), _remoteResource(copy_from._remoteResource) {
     // we can not make a copy of this container once the request has
     // been made
-    if (_response) {
-        string err = (string) "The Container has already been accessed, " + "can not create a copy of this container.";
+    if (_remoteResource) {
+        string err = (string) "The Container has already been accessed, "
+                + "can not create a copy of this container.";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 }
 
-void GatewayContainer::_duplicate(GatewayContainer &copy_to)
-{
-    if (copy_to._response) {
-        string err = (string) "The Container has already been accessed, " + "can not duplicate this resource.";
+void GatewayContainer::_duplicate(GatewayContainer &copy_to) {
+    if (copy_to._remoteResource) {
+        string err = (string) "The Container has already been accessed, "
+                + "can not duplicate this resource.";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
-    copy_to._response = _response;
+    copy_to._remoteResource = _remoteResource;
     BESContainer::_duplicate(copy_to);
 }
 
 BESContainer *
-GatewayContainer::ptr_duplicate()
-{
+GatewayContainer::ptr_duplicate() {
     GatewayContainer *container = new GatewayContainer;
     _duplicate(*container);
     return container;
 }
 
-GatewayContainer::~GatewayContainer()
-{
-    if (_response) {
+GatewayContainer::~GatewayContainer() {
+    if (_remoteResource) {
         release();
     }
 }
@@ -122,28 +122,91 @@ GatewayContainer::~GatewayContainer()
  * @return full path to the remote request response data file
  * @throws BESError if there is a problem making the remote request
  */
-string GatewayContainer::access()
-{
-    BESDEBUG("gateway", "accessing " << get_real_name() << endl);
+string GatewayContainer::access() {
+
+    BESDEBUG( "gateway", "GatewayContainer::access() - BEGIN" << endl);
+
+    // Since this the Gateway we know that the real_name is a URL.
+    string url  = get_real_name();
+
+
+    // Get a pointer to the singleton cache instance for this process.
+    BESCache3 *cache = BESCache3::get_instance(TheBESKeys::TheKeys(), (string)"BES.CacheDir",
+                                               (string)"BES.CachePrefix", (string)"BES.CacheSize");
+
+    BESDEBUG( "gateway", "GatewayContainer::access() - Accessing " << url << endl);
+
+    string type = get_container_type();
+    if (type == "gateway")
+        type = "";
+
+    if(!_remoteResource) {
+        BESDEBUG( "gateway", "GatewayContainer::access() - Building new RemoteResource." << endl );
+        _remoteResource = new gateway::RemoteHttpResource(url);
+        _remoteResource->retrieveResource();
+    }
+    BESDEBUG( "gateway", "GatewayContainer::access() - Located remote resource." << endl );
+
+
+    string cachedResource = _remoteResource->getCacheFileName();
+    BESDEBUG( "gateway", "GatewayContainer::access() - Using local cache file: " << cachedResource << endl );
+
+    type = _remoteResource->getType();
+    set_container_type(type);
+    BESDEBUG( "gateway", "GatewayContainer::access() - Type: " << type << endl );
+
+
+    BESDEBUG( "gateway", "GatewayContainer::access() - Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
+    BESDEBUG( "gateway", "GatewayContainer::access() - Done accessing " << *this << endl);
+    BESDEBUG( "gateway", "GatewayContainer::access() - END" << endl);
+
+    return cachedResource;    // this should return the file name from bescache3
+}
+
+
+
+
+#if 0
+/** @brief access the remote target response by making the remote request
+ *
+ * @return full path to the remote request response data file
+ * @throws BESError if there is a problem making the remote request
+ */
+string GatewayContainer::access_OLD() {
+    BESDEBUG( "gateway", "accessing " << get_real_name() << endl);
     string type = get_container_type();
     if (type == "gateway")
         type = "";
     string accessed;
+
+    HTTPResponse *_response=0; // added this line to preserve compile. Was a private member variable of the class
+
     if (!_response) {
         GatewayRequest r;
+
+        // @TODO Fix this to use caching
+
         _response = r.make_request(get_real_name(), type);
-        if (_response)
+
+        if (_response){
+            // Notice that _response->get_file() returns a file name, and not an "open" file descriptor.
             accessed = _response->get_file();
-        BESDEBUG("gateway", "gateway request using HTTPConnect returned file " << accessed << endl);
+        }
+
+        BESDEBUG( "gateway", "gateway request using HTTPConnect returned file " << accessed << endl );
         set_container_type(type);
-    }
-    else {
+    } else {
+        // Notice that _response->get_file() returns a file name, and not an "open" file descriptor.
         accessed = _response->get_file();
     }
-    BESDEBUG("gateway", "done accessing " << get_real_name() << " returning " << accessed << endl);
-    BESDEBUG("gateway", "done accessing " << *this << endl);
-    return accessed;
+    BESDEBUG( "gateway",
+            "done accessing " << get_real_name() << " returning " << accessed << endl);
+    BESDEBUG( "gateway", "done accessing " << *this << endl);
+
+    return accessed;    // this should return the file name from bescache3
 }
+
+#endif
 
 /** @brief release the resources
  *
@@ -151,15 +214,14 @@ string GatewayContainer::access()
  *
  * @return true if the resource is released successfully and false otherwise
  */
-bool GatewayContainer::release()
-{
-    if (_response) {
-        BESDEBUG("gateway", "releasing gateway response" << endl);
-        delete _response;
-        _response = 0;
+bool GatewayContainer::release() {
+    if (_remoteResource) {
+        BESDEBUG( "gateway", "GatewayContainer::release() - Releasing RemoteResource" << endl);
+        delete _remoteResource;
+        _remoteResource = 0;
     }
 
-    BESDEBUG("gateway", "done releasing gateway response" << endl);
+    BESDEBUG( "gateway", "done releasing gateway response" << endl);
     return true;
 }
 
@@ -170,15 +232,16 @@ bool GatewayContainer::release()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void GatewayContainer::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "GatewayContainer::dump - (" << (void *) this << ")" << endl;
+void GatewayContainer::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "GatewayContainer::dump - (" << (void *) this
+            << ")" << endl;
     BESIndent::Indent();
     BESContainer::dump(strm);
-    if (_response) {
-        strm << BESIndent::LMarg << "response file: " << _response->get_file() << endl;
+    if (_remoteResource) {
+        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << _remoteResource->getCacheFileName()
+                << endl;
         strm << BESIndent::LMarg << "response headers: ";
-        vector<string> *hdrs = _response->get_headers();
+        vector<string> *hdrs = _remoteResource->getResponseHeaders();
         if (hdrs) {
             strm << endl;
             BESIndent::Indent();
@@ -189,12 +252,10 @@ void GatewayContainer::dump(ostream &strm) const
                 strm << BESIndent::LMarg << hdr_line << endl;
             }
             BESIndent::UnIndent();
-        }
-        else {
+        } else {
             strm << "none" << endl;
         }
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
     }
     BESIndent::UnIndent();

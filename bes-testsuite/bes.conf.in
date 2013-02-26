@@ -276,3 +276,10 @@ Gateway.MimeTypes=nc:application/x-netcdf
 Gateway.MimeTypes+=h4:application/x-hdf
 Gateway.MimeTypes+=h5:application/x-hdf5
 
+#Gateway.ProxyHost=warsaw.wonderproxy.com
+#Gateway.ProxyPort=8080
+#Gateway.ProxyUser=username
+#Gateway.ProxyPassword=password
+#Gateway.ProxyUserPW=username:password
+#Gateway.ProxyAuthType=basic
+

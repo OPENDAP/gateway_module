@@ -37,31 +37,40 @@
 #include <map>
 #include <vector>
 
-using std::string;
-using std::vector;
-using std::map;
+using std::string ;
+using std::vector ;
+using std::map ;
 
 /** @brief utility class for the gateway remote request mechanism
  *
  */
-class GatewayUtils {
+class GatewayUtils
+{
 public:
-    static vector<string> WhiteList;
-    static map<string, string> MimeList;
-    static string ProxyProtocol;
-    static string ProxyHost;
-    static int ProxyPort;
-    static bool useInternalCache;
+    static vector<string>	WhiteList ;
+    static map<string,string>	MimeList ;
+    static string		ProxyProtocol ;
+    static string       ProxyHost ;
+    static string       ProxyUserPW ;
+    static string       ProxyUser ;
+    static string       ProxyPassword ;
+    static int          ProxyPort ;
+    static int          ProxyAuthType ;
+    static bool			useInternalCache ;
 
-    static string NoProxyRegex;
+    static string       NoProxyRegex ;
 
-    static void Initialize();
+    static void			Initialize() ;
 #if 0
-    static char * Get_tempfile_template( char *file_template );
+    static char *		Get_tempfile_template( char *file_template ) ;
 #endif
-    static void Get_type_from_disposition(const string &disp, string &type);
-    static void Get_type_from_content_type(const string &ctype, string &type);
-    static void Get_type_from_url(const string &url, string &type);
-};
+    static void			Get_type_from_disposition( const string &disp,
+						           string &type ) ;
+    static void			Get_type_from_content_type( const string &ctype,
+						            string &type ) ;
+    static void			Get_type_from_url( const string &url,
+						   string &type ) ;
+} ;
 
 #endif // I_GatewayUtils_H
+

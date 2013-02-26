@@ -42,28 +42,29 @@ using std::string;
 using namespace libdap;
 
 #include "BESContainer.h"
+#include "RemoteHttpResource.h"
 
 /** @brief Container representing a remote request
  *
  * The real name of a GatewayContainer is the actual remote request. When the
  * access method is called the remote request is made, the response
- * saved to file if successful, and the target response returned as the real
+ * saved to file if successfull, and the target response returned as the real
  * container that a data handler would then open.
  *
  * @see GatewayContainerStorage
  */
 class GatewayContainer: public BESContainer {
 private:
-    HTTPResponse * _response;
+    gateway::RemoteHttpResource *_remoteResource;
 
     GatewayContainer() :
-            BESContainer(), _response(0)
-    {
+            BESContainer(), _remoteResource(0) {
     }
 protected:
     void _duplicate(GatewayContainer &copy_to);
 public:
-    GatewayContainer(const string &sym_name, const string &real_name, const string &type);
+    GatewayContainer(const string &sym_name, const string &real_name,
+            const string &type);
 
     GatewayContainer(const GatewayContainer &copy_from);
 

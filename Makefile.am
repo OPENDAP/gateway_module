@@ -17,13 +17,15 @@ lib_bes_LTLIBRARIES = libgateway_module.la
 GATEWAY_SRCS = \
 		GatewayModule.cc GatewayRequestHandler.cc		\
 		GatewayContainer.cc GatewayContainerStorage.cc		\
-		GatewayError.cc GatewayRequest.cc GatewayUtils.cc
+		GatewayError.cc GatewayRequest.cc GatewayUtils.cc \
+		RemoteHttpResource.cc curl_utils.cc
 
 GATEWAY_HDRS = \
 		GatewayModule.h GatewayRequestHandler.h			\
 		GatewayResponseNames.h					\
 		GatewayContainer.h GatewayContainerStorage.h		\
-		GatewayError.h GatewayRequest.h GatewayUtils.h
+		GatewayError.h GatewayRequest.h GatewayUtils.h  \
+		RemoteHttpResource.h curl_utils.h
 
 libgateway_module_la_SOURCES = $(GATEWAY_SRCS) $(GATEWAY_HDRS)
 libgateway_module_la_CPPFLAGS = $(BES_CPPFLAGS)
