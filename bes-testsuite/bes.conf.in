@@ -64,10 +64,11 @@ BES.LogVerbose=no
 # BES.module.h4=@modulesdir@/libhdf4_module.so
 # BES.module.ff=@modulesdir@/libff_module.so
 
-BES.modules=dap,cmd,dapreader,gateway
+BES.modules=dap,cmd,dapreader,gateway,nc
 BES.module.dap=@modulesdir@/libdap_module.so
 BES.module.cmd=@modulesdir@/libdap_xml_module.so
 BES.module.dapreader=@modulesdir@/libdapreader_module.so
+BES.module.nc=@modulesdir@/libnc_module.so
 BES.module.gateway=@abs_top_builddir@/.libs/libgateway_module.so
 
 #-----------------------------------------------------------------------#
@@ -106,7 +107,7 @@ BES.Data.RootDirectory=/dev/null
 
 # BES.Catalog.catalog.TypeMatch=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;h4.*\.(hdf|HDF|eos)(\.gz|\.bz2|\.Z)?$;
 
-BES.Catalog.catalog.TypeMatch=dapreader:.*.das(.bz2|.gz|.Z)?$;dapreader:.*.dods(.bz2|.gz|.Z)?$;dapreader:.*.dds(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch=dapreader:.*.das(.bz2|.gz|.Z)?$;dapreader:.*.dods(.bz2|.gz|.Z)?$;dapreader:.*.dds(.bz2|.gz|.Z)?$;nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;
 
 # Normally, when a client asks for a data catalog, all files and directories
 # are shown. Use the following two parameters to customize this behavior.

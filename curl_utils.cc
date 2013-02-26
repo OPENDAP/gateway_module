@@ -7,6 +7,7 @@
 
 
 #include <GNURegex.h>
+#include <algorithm>    // std::for_each
 
 
 #include "util.h"
