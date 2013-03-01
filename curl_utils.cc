@@ -185,11 +185,6 @@ long read_url(CURL *curl,
 
 
 
-
-
-
-
-
 /**
  * Configure the proxy options for the pass curl object. The passed URL is the target URL. If the target URL
  * matches the Gateway.NoProxyRegex in the config file, then no proxying is done.
@@ -295,9 +290,6 @@ bool configureProxy(CURL *curl, const string &url) {
                         "RemoteResource::configureProxy() - CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
                 curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
             }
-
-
-
 
         }
     }
@@ -456,53 +448,13 @@ int curl_debug(CURL *, curl_infotype info, char *msg, size_t size, void  *)
 
 
 
-#if 0       // This code was from HTTPConnect and I don't think it's relevant for the gateway...
-            // Why? Because we don't need the Gateway reading .dodsrc files. That will make our users crazy!
-
-libdap::RCReader *RemoteResource::getRCReader(const string &url){
-    BESDEBUG( "gateway", "RemoteResource::getRCReader() - Building RCReader" << endl );
-
-    libdap::RCReader *rcr = libdap::RCReader::instance() ;
-
-    // Don't set up the proxy server for URLs that match the 'NoProxy'
-    // regex set in the gateway.conf file.
-    bool configure_proxy = true;
-    // Don't create the regex if the string is empty
-    if (!GatewayUtils::NoProxyRegex.empty())
-    {
-        libdap::Regex r(GatewayUtils::NoProxyRegex.c_str());
-        if (r.match(url.c_str(), url.length()) != -1) {
-            BESDEBUG( "gateway", "Gateway found NoProxy match. Regex: " <<  GatewayUtils::NoProxyRegex <<  "; Url: " << url << endl );
-            configure_proxy = false;
-        }
-    }
-
-    if (configure_proxy)
-    {
-        rcr->set_proxy_server_protocol(GatewayUtils::ProxyProtocol);
-        rcr->set_proxy_server_host(GatewayUtils::ProxyHost);
-        rcr->set_proxy_server_port(GatewayUtils::ProxyPort);
-    }
-
-    // GatewayUtils::useInternalCache defaults to false; use squid...
-    // rcr->set_use_cache( GatewayUtils::useInternalCache ) ;
-
-    // Always use a cache!
-    rcr->set_use_cache(true);
-
-    return rcr;
-}
-#endif
 
 
 
 
 
 
-
-
-
-CURL *www_lib_init(string url, char *error_buffer)
+CURL *libcurl_init(string url, char *error_buffer)
 {
 
 
@@ -510,37 +462,8 @@ CURL *www_lib_init(string url, char *error_buffer)
     if (!curl)
         throw libdap::InternalErr(__FILE__, __LINE__, "Could not initialize libcurl.");
 
-    if(configureProxy(curl, url))
+    configureProxy(curl, url);
 
-
-#if 0  // Moved to RemoteResource::configureProxy()
-    // ###########################################################################################
-    // Now set options that will remain constant for the duration of this
-    // CURL object.
-
-    // Set the proxy host.
-    if (!d_rcr->get_proxy_server_host().empty()) {
-        BESDEBUG("gateway", "RemoteResource::www_lib_init() - Setting up a proxy server." << endl);
-        BESDEBUG("gateway", "RemoteResource::www_lib_init() - Proxy host: " << d_rcr->get_proxy_server_host() << endl);
-        BESDEBUG("gateway", "RemoteResource::www_lib_init() - Proxy port: " << d_rcr->get_proxy_server_port() << endl);
-        BESDEBUG("gateway", "RemoteResource::www_lib_init() - Proxy pwd : " << d_rcr->get_proxy_server_userpw() << endl);
-        curl_easy_setopt(curl, CURLOPT_PROXY,
-                         d_rcr->get_proxy_server_host().c_str());
-        curl_easy_setopt(curl, CURLOPT_PROXYPORT,
-                         d_rcr->get_proxy_server_port());
-
-    // As of 4/21/08 only NTLM, Digest and Basic work.
-#ifdef CURLOPT_PROXYAUTH
-        curl_easy_setopt(curl, CURLOPT_PROXYAUTH, (long)CURLAUTH_ANY);
-#endif
-
-        // Password might not be required. 06/21/04 jhrg
-        if (!d_rcr->get_proxy_server_userpw().empty())
-            curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD,
-                             d_rcr->get_proxy_server_userpw().c_str());
-    }
-    // ###########################################################################################
-#endif
 
 
     // Load in the default headers to send with a request. The empty Pragma

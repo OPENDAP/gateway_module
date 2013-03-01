@@ -40,10 +40,6 @@ private:
      */
     int d_fd;
 
-    /**
-     * Open FILE * stream for the resource content (made from fdopen(fd))
-     */
-    FILE *d_fstrm;
 
     /**
      * A flag used to protect the state of the object by not allowing some method calls to be
@@ -71,7 +67,7 @@ private:
 
 
     void setType(const vector<string> *resp_hdrs );
-    FILE *writeResourceToFile(int fd);
+    void writeResourceToFile(int fd);
 
 
 
@@ -79,7 +75,6 @@ protected:
 
     RemoteHttpResource::RemoteHttpResource() :
         d_fd(0),
-        d_fstrm(0),
         d_curl(0),
         d_response_headers(0),
         d_request_headers(0),
@@ -99,9 +94,6 @@ public:
         return d_fd;
     }
 
-    FILE *getFileStream(){
-        return d_fstrm;
-    }
 
     string getType() {
         return d_type;

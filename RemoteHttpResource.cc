@@ -106,7 +106,6 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
     _initialized = false;
 
     d_fd = 0;
-    d_fstrm = 0;
     d_curl = 0;
     d_resourceCacheFileName.clear();
     d_response_headers = new vector<string>();
@@ -121,18 +120,18 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
     BESDEBUG("gateway", "RemoteHttpResource() - URL: " << d_remoteResourceUrl << endl);
 
     /*
- *
- *
- * EXAMPLE: returned value parameter for CURL *
- *
-    CURL *www_lib_init(CURL **curl); // function type signature
+     *
+     *
+     * EXAMPLE: returned value parameter for CURL *
+     *
+         CURL *www_lib_init(CURL **curl); // function type signature
 
 
-    CURL *pvparam = 0;               // passed value parameter
-    result = www_lib_init(&pvparam);  // the call to the method
-*/
+         CURL *pvparam = 0;               // passed value parameter
+         result = www_lib_init(&pvparam);  // the call to the method
+     */
 
-    d_curl = gateway::www_lib_init(d_remoteResourceUrl, d_error_buffer);  // This may throw either Error or InternalErr
+    d_curl = gateway::libcurl_init(d_remoteResourceUrl, d_error_buffer);  // This may throw either Error or InternalErr
 
     BESDEBUG("gateway", "RemoteHttpResource() - d_curl: " <<   d_curl << endl);
 
@@ -188,7 +187,7 @@ void RemoteHttpResource::retrieveResource()
 
             // Write the remote resource to the cache file. Save the returned FILE * cached in the member variable
             // * d_fstrm where it can be accessed via the getFileStream() method.
-            d_fstrm = writeResourceToFile(d_fd);
+            writeResourceToFile(d_fd);
 
             // #########################################################################################################
             // I think right here is where I would be able to cache the data type/response headers. While I have
@@ -252,7 +251,7 @@ void RemoteHttpResource::retrieveResource()
  *
  * @param fd An open file descriptor the is associated with the target file.
  */
-FILE *RemoteHttpResource::writeResourceToFile(int fd) {
+void RemoteHttpResource::writeResourceToFile(int fd) {
     BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl );
 
     // fdopen the file using the file descriptor fd so we can pass a FILE * into libcurl
@@ -285,8 +284,6 @@ FILE *RemoteHttpResource::writeResourceToFile(int fd) {
     rewind(stream);
     BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - Rewound File *stream" << endl );
 
-    // Return open FILE * for later use.
-    return stream;
 
     // @TODO Why don't we close this file? We don't ever hand back a FILE * or file descriptor integer, and the way that
     // the gateway used HTTPConnect didn't utilize the file  descriptor that was handed back by HTTPConnect...
@@ -371,7 +368,7 @@ void RemoteHttpResource::setType(const vector<string> *resp_hdrs)
                 << "\"" << endl ) ;
     }
 
-    // still couldn't figure it out ... throw an exception
+    // still couldn't figure it out, punt
     if( type.empty() )
     {
         string err = (string)"RemoteHttpResource::setType() - Unable to determine the type of data"
