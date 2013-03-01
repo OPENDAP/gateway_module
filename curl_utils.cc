@@ -622,8 +622,8 @@ long read_url(CURL *curl,
     null. These headers will be appended to the list of default headers.
     @return The HTTP status code.
     @exception Error Thrown if libcurl encounters a problem; the libcurl
-    error message is stuffed into the Error object. */
-
+    error message is stuffed into the Error object.
+*/
 long read_url(CURL *curl,
               const string &url,
               int fd,
