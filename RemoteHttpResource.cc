@@ -377,8 +377,11 @@ void RemoteHttpResource::setType(const vector<string> *resp_hdrs)
     if( type.empty() )
     {
         string err = (string)"RemoteHttpResource::setType() - Unable to determine the type of data"
-                 + " returned from " + d_remoteResourceUrl ;
-        throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+                 + " returned from '" + d_remoteResourceUrl +"'  Setting type to 'unknown'" ;
+        BESDEBUG("gateway", err);
+
+        type = "unknown";
+        //throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
 
