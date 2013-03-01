@@ -67,7 +67,6 @@ RemoteHttpResource::~RemoteHttpResource() {
     BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_request_headers." << endl);
 
 
-
     //@TODO Do we need to check for open files somewhere? OR is this all good?
     // It seems like that when we call cache->create_and_lock(d_resourceCacheFileName, fd)
     // or cache->get_read_lock(d_resourceCacheFileName, fd) we open a file (using open) and we
@@ -266,7 +265,7 @@ void RemoteHttpResource::writeResourceToFile(int fd) {
             // delete resp_hdrs; resp_hdrs = 0;
             string msg = "Error while reading the URL: '";
             msg += d_remoteResourceUrl;
-            msg += "'The HTTP request returned a status of " + status + " which means '";
+            msg += "'The HTTP request returned a status of " + libdap::long_to_string(status) + " which means '";
             msg += http_status_to_string(status) + "' \n";
             throw libdap::Error(msg);
         }

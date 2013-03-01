@@ -49,7 +49,7 @@ size_t save_raw_http_headers(void *ptr, size_t size, size_t nmemb, void *resp_hd
 int curl_debug(CURL *, curl_infotype info, char *msg, size_t size, void  *);
 
 
-CURL *www_lib_init(string url, char *error_buffer);
+CURL *libcurl_init(string url, char *error_buffer);
 
 
 

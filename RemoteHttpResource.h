@@ -73,7 +73,7 @@ private:
 
 protected:
 
-    RemoteHttpResource::RemoteHttpResource() :
+    RemoteHttpResource() :
         d_fd(0),
         d_curl(0),
         d_response_headers(0),
@@ -82,17 +82,12 @@ protected:
         d_resourceCacheFileName("")
     {}
 
-    RemoteHttpResource(libdap::RCReader *rcr);
 
 public:
     RemoteHttpResource(const string &url);
     virtual ~RemoteHttpResource();
 
     void retrieveResource();
-
-    int getFileDescriptor(){
-        return d_fd;
-    }
 
 
     string getType() {
