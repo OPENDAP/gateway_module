@@ -174,20 +174,20 @@ void GatewayUtils::Initialize() {
             authType = BESUtil::lowercase( authType ) ;
             if(authType == "basic"){
                 GatewayUtils::ProxyAuthType = CURLAUTH_BASIC;
-                BESDEBUG("gateway", "~GatewayUtils::Initialize() - ProxyAuthType BASIC set." << endl);
+                BESDEBUG("gateway", "GatewayUtils::Initialize() - ProxyAuthType BASIC set." << endl);
             }
             else if(authType=="digest"){
                 GatewayUtils::ProxyAuthType = CURLAUTH_DIGEST;
-                BESDEBUG("gateway", "~GatewayUtils::Initialize() - ProxyAuthType DIGEST set." << endl);
+                BESDEBUG("gateway", "GatewayUtils::Initialize() - ProxyAuthType DIGEST set." << endl);
             }
 
             else if(authType=="ntlm"){
                 GatewayUtils::ProxyAuthType = CURLAUTH_NTLM;
-                BESDEBUG("gateway", "~GatewayUtils::Initialize() - ProxyAuthType NTLM set." << endl);
+                BESDEBUG("gateway", "GatewayUtils::Initialize() - ProxyAuthType NTLM set." << endl);
             }
             else {
                 GatewayUtils::ProxyAuthType = CURLAUTH_BASIC;
-                BESDEBUG("gateway", "~GatewayUtils::Initialize() - User supplied an invalid value '"<< authType <<
+                BESDEBUG("gateway", "GatewayUtils::Initialize() - User supplied an invalid value '"<< authType <<
                         "'  for Gateway.ProxyAuthType. Falling back to BASIC authentication scheme." << endl);
            }
 

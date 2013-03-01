@@ -27,6 +27,7 @@
 //
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
+
 #include <sstream>
 #include <GNURegex.h>
 
@@ -130,7 +131,9 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
          result = www_lib_init(&pvparam);  // the call to the method
      */
 
-    d_curl = gateway::libcurl_init(d_remoteResourceUrl, d_error_buffer);  // This may throw either Error or InternalErr
+    d_curl = libcurl::init(d_error_buffer);  // This may throw either Error or InternalErr
+
+    libcurl::configureProxy(d_curl, d_remoteResourceUrl);     // Configure the a proxy for this url (if appropriate).
 
     BESDEBUG("gateway", "RemoteHttpResource() - d_curl: " <<   d_curl << endl);
 
@@ -251,26 +254,27 @@ void RemoteHttpResource::retrieveResource()
  * @param fd An open file descriptor the is associated with the target file.
  */
 void RemoteHttpResource::writeResourceToFile(int fd) {
-    BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl );
+    BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - BEGIN" << endl );
 
-    // fdopen the file using the file descriptor fd so we can pass a FILE * into libcurl
-    // @TODO JAMES - I know I'm not supposed to close(fd), but what about stream? Is it enough to rewind it?
-    FILE* stream = fdopen(fd, "w");
 
     int status = -1;
     try {
-        status = gateway::read_url(d_curl, d_remoteResourceUrl, stream, d_response_headers, d_request_headers, d_error_buffer); // Throws Error.
+        BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl );
+        status = libcurl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers, d_error_buffer); // Throws Error.
         if (status >= 400) {
             BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - HTTP returned an error status: " << status << endl );
             // delete resp_hdrs; resp_hdrs = 0;
             string msg = "Error while reading the URL: '";
             msg += d_remoteResourceUrl;
             msg += "'The HTTP request returned a status of " + libdap::long_to_string(status) + " which means '";
-            msg += http_status_to_string(status) + "' \n";
+            msg += libcurl::http_status_to_string(status) + "' \n";
             throw libdap::Error(msg);
         }
+        BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl );
 
-        BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - Resourced saved. Evaluating HTTP Headers... " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl );
+        // rewind the file
+        lseek(fd,0,SEEK_SET);
+        BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - Reset file descriptor." << endl );
 
         // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
         setType(d_response_headers);
@@ -278,14 +282,7 @@ void RemoteHttpResource::writeResourceToFile(int fd) {
     catch (libdap::Error &e) {
         throw;
     }
-    BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - Cached resource" << endl );
-
-    rewind(stream);
-    BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - Rewound File *stream" << endl );
-
-
-    // @TODO Why don't we close this file? We don't ever hand back a FILE * or file descriptor integer, and the way that
-    // the gateway used HTTPConnect didn't utilize the file  descriptor that was handed back by HTTPConnect...
+    BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - END" << endl );
 }
 
 

@@ -165,49 +165,6 @@ string GatewayContainer::access() {
 
 
 
-
-#if 0
-/** @brief access the remote target response by making the remote request
- *
- * @return full path to the remote request response data file
- * @throws BESError if there is a problem making the remote request
- */
-string GatewayContainer::access_OLD() {
-    BESDEBUG( "gateway", "accessing " << get_real_name() << endl);
-    string type = get_container_type();
-    if (type == "gateway")
-        type = "";
-    string accessed;
-
-    HTTPResponse *_response=0; // added this line to preserve compile. Was a private member variable of the class
-
-    if (!_response) {
-        GatewayRequest r;
-
-        // @TODO Fix this to use caching
-
-        _response = r.make_request(get_real_name(), type);
-
-        if (_response){
-            // Notice that _response->get_file() returns a file name, and not an "open" file descriptor.
-            accessed = _response->get_file();
-        }
-
-        BESDEBUG( "gateway", "gateway request using HTTPConnect returned file " << accessed << endl );
-        set_container_type(type);
-    } else {
-        // Notice that _response->get_file() returns a file name, and not an "open" file descriptor.
-        accessed = _response->get_file();
-    }
-    BESDEBUG( "gateway",
-            "done accessing " << get_real_name() << " returning " << accessed << endl);
-    BESDEBUG( "gateway", "done accessing " << *this << endl);
-
-    return accessed;    // this should return the file name from bescache3
-}
-
-#endif
-
 /** @brief release the resources
  *
  * Release the resource

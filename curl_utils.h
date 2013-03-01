@@ -1,9 +1,32 @@
-/*
- * curl_utils.h
- *
- *  Created on: Feb 25, 2013
- *      Author: ndp
- */
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of gateway_module, A C++ module that can be loaded in to
+// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+
+// Copyright (c) 2013 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
+// (c) COPYRIGHT URI/MIT 1994-1999
+// Please read the full copyright statement in the file COPYRIGHT_URI.
+//
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
 
 #ifndef CURL_UTILS_H_
 #define CURL_UTILS_H_
@@ -23,16 +46,12 @@ using std::vector;
 
 
 
-namespace gateway {
+namespace libcurl {
 
-string http_status_to_string(int status);
+
+CURL *init(char *error_buffer);
 
 bool configureProxy(CURL *curl, const string &url);
-
-
-
-string getCurlAuthTypeName(const int authType);
-
 
 long read_url(CURL *curl,
               const string &url,
@@ -42,18 +61,23 @@ long read_url(CURL *curl,
               char error_buffer[]);
 
 
-
-size_t save_raw_http_headers(void *ptr, size_t size, size_t nmemb, void *resp_hdrs);
-
-
-int curl_debug(CURL *, curl_infotype info, char *msg, size_t size, void  *);
-
-
-CURL *libcurl_init(string url, char *error_buffer);
+long read_url(CURL *curl,
+              const string &url,
+              int fd,
+              vector<string> *resp_hdrs,
+              const vector<string> *headers,
+              char error_buffer[]);
 
 
 
+string http_status_to_string(int status);
 
 
-} /* namespace gateway */
+
+
+
+
+
+
+} /* namespace libcurl */
 #endif /* CURL_UTILS_H_ */
