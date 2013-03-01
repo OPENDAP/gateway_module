@@ -1,10 +1,32 @@
-/*
- * RemoteHttpResource.cpp
- *
- *  Created on: Feb 22, 2013
- *      Author: ndp
- */
+// -*- mode: c++; c-basic-offset:4 -*-
 
+// This file is part of gateway_module, A C++ module that can be loaded in to
+// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+
+// Copyright (c) 2013 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
+// (c) COPYRIGHT URI/MIT 1994-1999
+// Please read the full copyright statement in the file COPYRIGHT_URI.
+//
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
 #include <sstream>
 #include <GNURegex.h>
 
@@ -28,44 +50,22 @@ using namespace std;
 
 
 
-static string long_to_string(unsigned long value)
-{
-  std::ostringstream stream;
-  stream << value;
-  return stream.str();
-}
-
 namespace gateway {
 
 
-
-
-RemoteHttpResource::RemoteHttpResource() {
-
-    d_fd = 0;
-    d_fstrm = 0;
-    d_curl = 0;
-    d_resourceCacheFileName.clear();
-    d_response_headers = 0;
-    d_request_headers = 0;
-    _initialized = false;
-}
 
 RemoteHttpResource::~RemoteHttpResource() {
 
     BESDEBUG("gateway", "~RemoteHttpResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
 
-    if(d_response_headers){
-        delete d_response_headers;
-        d_response_headers = 0;
-        BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_response_headers." << endl);
-    }
+    delete d_response_headers;
+    d_response_headers = 0;
+    BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_response_headers." << endl);
 
-    if(d_request_headers){
-        delete d_request_headers;
-        d_request_headers = 0;
-        BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_request_headers." << endl);
-    }
+    delete d_request_headers;
+    d_request_headers = 0;
+    BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_request_headers." << endl);
+
 
 
     //@TODO Do we need to check for open files somewhere? OR is this all good?
@@ -89,7 +89,7 @@ RemoteHttpResource::~RemoteHttpResource() {
     }
 
 
-    if(d_curl!=0){
+    if(d_curl){
         curl_easy_cleanup(d_curl);
         BESDEBUG("gateway", "~RemoteHttpResource() - Called curl_easy_cleanup()." << endl);
     }
@@ -160,9 +160,8 @@ void RemoteHttpResource::retrieveResource()
     // @TODO Fix BESCache3 so that you can ask it to NOT strip the suffix which is some kind of funky
     // Uncompress feature that should be controllable and probably driven by a regex. Then we can stop
     // adding our own suffix so that BESCache3 can remove it.
-    d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl+".gateway");
+    d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl+".uglyHack");
     BESDEBUG("gateway", "RemoteHttpResource::retrieveResource() - d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
-
 
     // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
     // We need to know the type of the resource. HTTP headers are the preferred  way to determine the type.
@@ -172,7 +171,6 @@ void RemoteHttpResource::retrieveResource()
     // But really - we gotta fix this.
     GatewayUtils::Get_type_from_url( d_remoteResourceUrl, d_type );
     BESDEBUG("gateway", "RemoteHttpResource::retrieveResource() - d_type: " << d_type << endl);
-
 
     try {
 
@@ -184,7 +182,7 @@ void RemoteHttpResource::retrieveResource()
         }
 
         // Now we actually need to reach out across the interwebs and retrieve the remote resource and put it's
-        // content into a local cache file, given that it's no in the cache.
+        // content into a local cache file, given that it's not in the cache.
         // First make an empty file and get an exclusive lock on it.
         if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
 
@@ -192,16 +190,16 @@ void RemoteHttpResource::retrieveResource()
             // * d_fstrm where it can be accessed via the getFileStream() method.
             d_fstrm = writeResourceToFile(d_fd);
 
+            // #########################################################################################################
+            // I think right here is where I would be able to cache the data type/response headers. While I have
+            // the exclusive lock I could open another cache file for metadata and write to it.
+            // #########################################################################################################
+
             // Change the exclusive lock on the new file to a shared lock. This keeps
             // other processes from purging the new file and ensures that the reading
             // process can use it.
             cache->exclusive_to_shared_lock(d_fd);
             BESDEBUG( "gateway", "RemoteHttpResource::retrieveResource() - Converted exclusive cache lock to shared lock." << endl );
-
-
-            // I think right here is where I would be able to cache the data type/response headers.
-
-
 
 
             // Now update the total cache size info and purge if needed. The new file's
@@ -269,7 +267,7 @@ FILE *RemoteHttpResource::writeResourceToFile(int fd) {
             // delete resp_hdrs; resp_hdrs = 0;
             string msg = "Error while reading the URL: '";
             msg += d_remoteResourceUrl;
-            msg += "'The HTTP request returned a status of " + long_to_string(status) + " which means '";
+            msg += "'The HTTP request returned a status of " + status + " which means '";
             msg += http_status_to_string(status) + "' \n";
             throw libdap::Error(msg);
         }

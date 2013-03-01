@@ -73,8 +73,20 @@ private:
     void setType(const vector<string> *resp_hdrs );
     FILE *writeResourceToFile(int fd);
 
+
+
 protected:
-    RemoteHttpResource();
+
+    RemoteHttpResource::RemoteHttpResource() :
+        d_fd(0),
+        d_fstrm(0),
+        d_curl(0),
+        d_response_headers(0),
+        d_request_headers(0),
+        _initialized(false),
+        d_resourceCacheFileName("")
+    {}
+
     RemoteHttpResource(libdap::RCReader *rcr);
 
 public:
