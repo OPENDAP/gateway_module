@@ -85,7 +85,7 @@ const char *http_server_errors[SERVER_ERR_MAX - SERVER_ERR_MIN + 1] =
     };
 
 
-/** This function translates the HTTP status codes into error messages. It
+/** This function translates an HTTP status code into an error messages. It
     works for those code greater than or equal to 400. */
 string http_status_to_string(int status)
 {
