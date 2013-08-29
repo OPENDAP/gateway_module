@@ -1,7 +1,7 @@
 
 $Id: README 23584 2010-09-14 23:18:51Z jimg $
 
-Updated for version 1.1.0
+Updated for version 1.1.1
 
 In this version of the handler, we added an optional parameter that
 can be used to suppres use of a proxy server for certain hosts. This can

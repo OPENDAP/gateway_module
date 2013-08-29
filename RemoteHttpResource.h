@@ -45,10 +45,11 @@ using std::vector;
 
 namespace gateway {
 
-// long read_url(CURL *curl, const string &url, FILE *stream, vector<string> *resp_hdrs, const vector<string> *headers, char error_buffer[]);
 
-// CURL *www_lib_init(string url, char *error_buffer);
-
+/**
+ * This class encapsulates a remote resource available via HTTP GET. It willb retrieve the content of the resource and place it
+ * in a local disk cache for rapid (subsequent) access. It can be configure to use a proxy server for the outgoing requests.
+ */
 class RemoteHttpResource {
 private:
 
@@ -132,25 +133,9 @@ protected:
 
 public:
 
-    /**
-     * A URL string that identifies the remote resource.
-     */
     RemoteHttpResource(const string &url);
-
-
-    /**
-     * Releases any existing cache file lock for the cached resource.
-     * Closes the file descriptor opened when retrieveResource() was called.
-     */
     virtual ~RemoteHttpResource();
 
-    /**
-     * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
-     * the remote resource.
-     *
-     * When this method returns the object is fully initialized and the cache file name for the resource is available
-     * along with an open file descriptor for the (now read-locked) cache file.
-     */
     void retrieveResource();
 
 

@@ -47,48 +47,10 @@ using std::vector;
 namespace libcurl {
 
 
-/**
- * Get's a new instance of CURL* and performs basic configuration of that instance.
- *  - Configure Gateway Proxy
- *  - Accept compressed responses
- *  - Any authentication type
- *  - Follow redirects
- *  - User agent set to curl versio.
- *
- *  @param url The url used to configure the proy.
- */
 CURL *init(char *error_buffer);
 
-/**
- * Configure the proxy options for the pass curl object. The passed URL is the target URL. If the target URL
- * matches the Gateway.NoProxyRegex in the config file, then no proxying is done.
- *
- * The proxy configuration is stored in the gateway_modules configuration file, gateway.conf. The allowed values are:
- * Gateway.ProxyHost=warsaw.wonderproxy.com
- * Gateway.ProxyPort=8080
- * Gateway.ProxyUser=username
- * Gateway.ProxyPassword=password
- * Gateway.ProxyUserPW=username:password
- * Gateway.ProxyAuthType=basic | digest | ntlm
- *
- */
 bool configureProxy(CURL *curl, const string &url);
 
-/** Use libcurl to dereference a URL. Read the information referenced by \c
-    url into the file pointed to by the open file descriptor \c fd.
-
-    @param url The URL to dereference.
-    @param fd  An open file descriptor (as in 'open' as opposed to 'fopen') which
-    will be the destination for the data; the caller can assume that when this
-    method returns that the body of the response can be retrieved by reading
-    from this file descriptor.
-    @param resp_hdrs Value/result parameter for the HTTP Response Headers.
-    @param request_headers A pointer to a vector of HTTP request headers. Default is
-    null. These headers will be appended to the list of default headers.
-    @return The HTTP status code.
-    @exception Error Thrown if libcurl encounters a problem; the libcurl
-    error message is stuffed into the Error object.
-*/
 long read_url(CURL *curl,
               const string &url,
               int fd,
@@ -96,12 +58,6 @@ long read_url(CURL *curl,
               const vector<string> *headers,
               char error_buffer[]);
 
-
-
-/** This function translates the HTTP status codes into error messages.
- * It works for those code greater than or equal to 400.
- *
- */
 string http_status_to_string(int status);
 
 

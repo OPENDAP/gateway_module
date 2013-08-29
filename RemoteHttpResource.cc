@@ -54,53 +54,11 @@ using namespace std;
 namespace gateway {
 
 
-
-RemoteHttpResource::~RemoteHttpResource() {
-
-    BESDEBUG("gateway", "~RemoteHttpResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
-
-    delete d_response_headers;
-    d_response_headers = 0;
-    BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_response_headers." << endl);
-
-    delete d_request_headers;
-    d_request_headers = 0;
-    BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_request_headers." << endl);
-
-
-    //@TODO Do we need to check for open files somewhere? OR is this all good?
-    // It seems like that when we call cache->create_and_lock(d_resourceCacheFileName, fd)
-    // or cache->get_read_lock(d_resourceCacheFileName, fd) we open a file (using open) and we
-    // get back the integer valued file descriptor and a cache file name. Then we are very careful
-    // to rewind the file stream thingy and to leave the file open. I'm thinking that we rewind it
-    // to be good citizens so to speak - that way if a down stream piece of code does choose to
-    // utilize the open file descriptor or FILE * then it's all ready.
-    //
-    // BUT - The old code in gateway_module never utilized the file pointer. It just gets the
-    // cache file name string and then I think, opens it AGAIN somewhere downstream in BES land
-    // and reads the data from the cached file.
-    //
-    // Does calling unlock_and_close() below close all those files up? Is keeping the file open
-    // part of the trick to make the cache work? It uses a file locking thingy?
-    if(!d_resourceCacheFileName.empty()){
-        BESCache3::get_instance()->unlock_and_close(d_resourceCacheFileName);
-        BESDEBUG("gateway", "~RemoteHttpResource() - Closed and unlocked "<< d_resourceCacheFileName << endl);
-        d_resourceCacheFileName.clear();
-    }
-
-
-    if(d_curl){
-        curl_easy_cleanup(d_curl);
-        BESDEBUG("gateway", "~RemoteHttpResource() - Called curl_easy_cleanup()." << endl);
-    }
-    d_curl = 0;
-
-
-    BESDEBUG("gateway", "~RemoteHttpResource() - END   resourceURL: " << d_remoteResourceUrl << endl);
-    d_remoteResourceUrl.clear();
-
-}
-
+/**
+ * Builds a RemoteHttpResource object associated with the passed \c url parameter.
+ *
+ * @param url Is a URL string that identifies the remote resource.
+ */
 RemoteHttpResource::RemoteHttpResource(const string &url)
 {
     _initialized = false;
@@ -142,6 +100,48 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
 
 
 
+/**
+ * Releases any memory resources and also any existing cache file locks for the cached resource.
+ * ( Closes the file descriptor opened when retrieveResource() was called.)
+ */RemoteHttpResource::~RemoteHttpResource() {
+
+    BESDEBUG("gateway", "~RemoteHttpResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
+
+    delete d_response_headers;
+    d_response_headers = 0;
+    BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_response_headers." << endl);
+
+    delete d_request_headers;
+    d_request_headers = 0;
+    BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_request_headers." << endl);
+
+    if(!d_resourceCacheFileName.empty()){
+        BESCache3::get_instance()->unlock_and_close(d_resourceCacheFileName);
+        BESDEBUG("gateway", "~RemoteHttpResource() - Closed and unlocked "<< d_resourceCacheFileName << endl);
+        d_resourceCacheFileName.clear();
+    }
+
+
+    if(d_curl){
+        curl_easy_cleanup(d_curl);
+        BESDEBUG("gateway", "~RemoteHttpResource() - Called curl_easy_cleanup()." << endl);
+    }
+    d_curl = 0;
+
+
+    BESDEBUG("gateway", "~RemoteHttpResource() - END   resourceURL: " << d_remoteResourceUrl << endl);
+    d_remoteResourceUrl.clear();
+
+}
+
+
+/**
+ * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
+ * the remote resource content using HTTP GET.
+ *
+ * When this method returns the RemoteHttpResource object is fully initialized and the cache file name for the resource
+ * is available along with an open file descriptor for the (now read-locked) cache file.
+ */
 void RemoteHttpResource::retrieveResource()
 {
     BESDEBUG("gateway", "RemoteHttpResource::retrieveResource() - BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
@@ -187,9 +187,12 @@ void RemoteHttpResource::retrieveResource()
         // First make an empty file and get an exclusive lock on it.
         if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
 
-            // Write the remote resource to the cache file. Save the returned FILE * cached in the member variable
-            // * d_fstrm where it can be accessed via the getFileStream() method.
+            // Write the remote resource to the cache file.
             writeResourceToFile(d_fd);
+
+
+
+
 
             // #########################################################################################################
             // I think right here is where I would be able to cache the data type/response headers. While I have
@@ -284,7 +287,6 @@ void RemoteHttpResource::writeResourceToFile(int fd) {
     }
     BESDEBUG( "gateway", "RemoteHttpResource::writeResourceToFile() - END" << endl );
 }
-
 
 
 

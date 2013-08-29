@@ -1,4 +1,10 @@
 
+Version 1.1.1
+
+Updated to use BES caching code.
+Fixed file handling issues.
+
+
 Version 1.1.0
 
 Added NoProxy switch to the handler's conf file so that it can be configured

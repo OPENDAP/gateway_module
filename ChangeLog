@@ -1,3 +1,94 @@
+2013-08-15  James Gallagher <jgallagher@opendap.org>
+
+	Fixes to the bison/flex parser/scanner code so that it works iwth a modern version (2.5++) of bison.
+
+2013-03-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: Comments. Got rid of the FILE * stuff and just use file descriptors
+
+2013-03-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: Comments. Got rid of the FILE * stuff and just use file descriptors
+
+2013-03-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: Comments. Got rid of the FILE * stuff and just use file descriptors
+
+2013-02-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: stuff
+
+2013-02-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: stuff
+
+2013-02-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: stuff
+
+2013-02-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway_module: stuff
+
+2013-02-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gate_module: Added new RemoteHttpResource class along with curl_utils. Stopped using HTTPConnect. Gateway utilizes BESCache3 code to cache remote resources.
+
+2013-02-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gate_module: Added new RemoteHttpResource class along with curl_utils. Stopped using HTTPConnect. Gateway utilizes BESCache3 code to cache remote resources.
+
+2013-02-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gate_module: Added new RemoteHttpResource class along with curl_utils. Stopped using HTTPConnect. Gateway utilizes BESCache3 code to cache remote resources.
+
+2013-02-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gate_module: Added new RemoteHttpResource class along with curl_utils. Stopped using HTTPConnect. Gateway utilizes BESCache3 code to cache remote resources.
+
+2013-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Ignored some files...
+
+2013-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Ignored some files...
+
+2013-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Formatted code and told SVN to ignore a bunch of generated files; some removed from SVN
+
+2013-01-23  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	gateway: Updated support email to support@opendap.org
+
+2013-01-20  James Gallagher <jgallagher@opendap.org>
+
+	Merge of the hyrax 1.8 branch
+
+	_M   .
+	M    bes-testsuite/bes.conf.in
+
+2012-04-13  James Gallagher <jgallagher@opendap.org>
+
+	After merge with hyrax 1.8 release branch and full build w/o test failures.
+
+	_M   .
+	M    ChangeLog
+	M    README
+	M    GatewayRequest.cc
+	M    gateway_module.spec
+	M    bes-testsuite/gateway/test.00.bescmd.baseline
+	M    bes-testsuite/gateway/test.01.bescmd.baseline
+	M    bes-testsuite/gateway/test.02.bescmd.baseline
+	M    bes-testsuite/package.m4
+	M    configure.ac
+	M    GatewayUtils.cc
+	M    INSTALL
+	M    GatewayUtils.h
+	M    NEWS
+
+
 2011-11-21  James Gallagher <jgallagher@opendap.org>
 
 	Added a blurb about the NoProxy option

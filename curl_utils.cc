@@ -296,7 +296,7 @@ public:
 
 
 /**
- * Configure the proxy options for the pass curl object. The passed URL is the target URL. If the target URL
+ * Configure the proxy options for the passed curl object. The passed URL is the target URL. If the target URL
  * matches the Gateway.NoProxyRegex in the config file, then no proxying is done.
  *
  * The proxy configuration is stored in the gateway_modules configuration file, gateway.conf. The allowed values are:
@@ -423,7 +423,6 @@ bool configureProxy(CURL *curl, const string &url) {
 
 /**
  * Get's a new instance of CURL* and performs basic configuration of that instance.
- *  - Configure Gateway Proxy
  *  - Accept compressed responses
  *  - Any authentication type
  *  - Follow redirects
@@ -434,13 +433,9 @@ bool configureProxy(CURL *curl, const string &url) {
 CURL *init(char *error_buffer)
 {
 
-
     CURL *curl = curl_easy_init();
     if (!curl)
         throw libdap::InternalErr(__FILE__, __LINE__, "Could not initialize libcurl.");
-
-
-
 
     // Load in the default headers to send with a request. The empty Pragma
     // headers overrides libcurl's default Pragma: no-cache header (which
@@ -483,11 +478,6 @@ CURL *init(char *error_buffer)
     curl_easy_setopt(curl, CURLOPT_USERAGENT, curl_version());
 
 
-
-
-
-
-
 #if 0
     // If the user turns off SSL validation...
     if (!d_rcr->get_validate_ssl() == 0) {
@@ -521,89 +511,6 @@ CURL *init(char *error_buffer)
     return curl;
 
 
-}
-
-
-
-
-/** Use libcurl to dereference a URL. Read the information referenced by \c
-    url into the file pointed to by \c stream.
-
-    @param url The URL to dereference.
-    @param stream The destination for the data; the caller can assume that
-    the body of the response can be found by reading from this pointer. A
-    value/result parameter
-    @param resp_hdrs Value/result parameter for the HTTP Response Headers.
-    @param headers A pointer to a vector of HTTP request headers. Default is
-    null. These headers will be appended to the list of default headers.
-    @return The HTTP status code.
-    @exception Error Thrown if libcurl encounters a problem; the libcurl
-    error message is stuffed into the Error object. */
-
-long read_url(CURL *curl,
-              const string &url,
-              FILE *stream,
-              vector<string> *resp_hdrs,
-              const vector<string> *headers,
-              char error_buffer[])
-{
-
-    BESDEBUG("curl", "curl_utils::read_url() - BEGIN" << endl);
-
-
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-
-#ifdef WIN32
-    //  See the curl documentation for CURLOPT_FILE (aka CURLOPT_WRITEDATA)
-    //  and the CURLOPT_WRITEFUNCTION option.  Quote: "If you are using libcurl as
-    //  a win32 DLL, you MUST use the CURLOPT_WRITEFUNCTION option if you set the
-    //  CURLOPT_WRITEDATA option or you will experience crashes".  At the root of
-    //  this issue is that one should not pass a FILE * to a windows DLL.  Close
-    //  inspection of libcurl yields that their default write function when using
-    //  the CURLOPT_WRITEDATA is just "fwrite".
-    curl_easy_setopt(d_curl, CURLOPT_FILE, stream);
-    curl_easy_setopt(d_curl, CURLOPT_WRITEFUNCTION, &fwrite);
-#else
-    curl_easy_setopt(curl, CURLOPT_FILE, stream);
-#endif
-
-    //DBG(copy(d_request_headers.begin(), d_request_headers.end(), ostream_iterator<string>(cerr, "\n")));
-
-    BuildHeaders req_hdrs;
-    //req_hdrs = for_each(d_request_headers.begin(), d_request_headers.end(),
-     //                   req_hdrs);
-    if (headers)
-        req_hdrs = for_each(headers->begin(), headers->end(), req_hdrs);
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, req_hdrs.get_headers());
-
-
-    // Pass save_raw_http_headers() a pointer to the vector<string> where the
-    // response headers may be stored. Callers can use the resp_hdrs
-    // value/result parameter to get the raw response header information .
-    curl_easy_setopt(curl, CURLOPT_WRITEHEADER, resp_hdrs);
-
-    // This call is the one that makes curl go get the thing.
-    CURLcode res = curl_easy_perform(curl);
-
-    // Free the header list and null the value in d_curl.
-    curl_slist_free_all(req_hdrs.get_headers());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
-
-
-    if (res != 0){
-        BESDEBUG("curl", "curl_utils::read_url() - OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
-        BESDEBUG("curl", "curl_utils::read_url() - OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
-        throw libdap::Error(error_buffer);
-    }
-
-    long status;
-    res = curl_easy_getinfo(curl, CURLINFO_HTTP_CODE, &status);
-    BESDEBUG("curl", "curl_utils::read_url() - HTTP Status " << status << endl);
-    if (res != CURLE_OK)
-        throw libdap::Error(error_buffer);
-    BESDEBUG("curl", "curl_utils::read_url() - END" << endl);
-
-    return status;
 }
 
 
