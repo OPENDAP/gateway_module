@@ -15,7 +15,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log *.sum site.exp
+CLEANFILES = *.log *.sum site.exp gmon.*
 
 EXTRA_DIST = gateway gateway_handlerTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 bes.conf.in
 
