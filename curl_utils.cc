@@ -22,16 +22,10 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// (c) COPYRIGHT URI/MIT 1994-1999
-// Please read the full copyright statement in the file COPYRIGHT_URI.
-//
-// Authors:
-//      ndp       Nathan Potter <ndp@opendap.org>
-
-
-#include <GNURegex.h>
+#include <unistd.h>
 #include <algorithm>    // std::for_each
 
+#include <GNURegex.h>
 
 #include "util.h"
 #include "BESDebug.h"
@@ -135,7 +129,7 @@ static string getCurlAuthTypeName(const int authType){
         authTypeString += "CURLAUTH_NTLM";
     }
 
-    /*
+#if 0
     match = authType & CURLAUTH_ANY;
     if(match){
         if(!authTypeString.empty())
@@ -158,10 +152,9 @@ static string getCurlAuthTypeName(const int authType){
             authTypeString += " ";
         authTypeString += "CURLAUTH_ONLY";
     }
+#endif
 
-*/
     return authTypeString;
-
 }
 
 
@@ -169,7 +162,7 @@ static string getCurlAuthTypeName(const int authType){
  * libcurl call back function that is used to write data to a passed open file descriptor (that would
  * be instead of the default open FILE *)
  */
-static size_t writeToOpenfileDescriptor( char *data, size_t size, size_t nmemb, void *userdata){
+static size_t writeToOpenfileDescriptor( char *data, size_t /* size */, size_t nmemb, void *userdata){
 
     int *fd = (int *) userdata;
 
