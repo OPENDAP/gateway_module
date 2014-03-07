@@ -28,6 +28,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
+#include <unistd.h>
+
 #include <sstream>
 #include <GNURegex.h>
 
