@@ -1,3 +1,38 @@
+2014-02-05  James Gallagher <jgallagher@opendap.org>
+
+	Changes for OSX 10.9
+
+2013-10-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated the FSF address in the copyright headers
+
+2013-09-27  James Gallagher <jgallagher@opendap.org>
+
+	svn ignore updated
+
+2013-09-27  James Gallagher <jgallagher@opendap.org>
+
+	Removed bes-testsuite/package.m4 (generated file)
+
+2013-09-26  James Gallagher <jgallagher@opendap.org>
+
+	removed -fno-defer-pop from all copies of Makefile.am since the new OSX compiler prints warnings about it and it seems to not make a difference with newer g++ versions.
+
+2013-08-28  Nathan Potter <ndp@opendap.org>
+
+	gateway_module: Updating version number, changelog, etc. for pending Hyrax 1.9 release
+
+2013-08-28  Nathan Potter <ndp@opendap.org>
+
+	gateway_module: Updating version number, changelog, etc. for pending Hyrax 1.9 release
+
+2013-08-15  James Gallagher <jgallagher@opendap.org>
+
+	Fixes to the bison/flex parser/scanner code so that it works iwth a modern version (2.5++) of bison.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2013-08-15  James Gallagher <jgallagher@opendap.org>
 
 	Fixes to the bison/flex parser/scanner code so that it works iwth a modern version (2.5++) of bison.

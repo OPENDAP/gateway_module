@@ -1,4 +1,8 @@
 
+Version 1.1.2
+
+Code and production rule changes to support OS-X 10.9 compatibility
+
 Version 1.1.1
 
 Updated to use BES caching code.
