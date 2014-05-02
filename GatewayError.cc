@@ -65,7 +65,7 @@ void GatewayError::read_error(const string &filename, string &err, const string 
             done = true;
         }
         else {
-            if (bytes_read >= 0 && bytes_read <= 1024)
+            if (bytes_read == 0 && bytes_read <= 1024)
                 buff[bytes_read] = '\0';
             err = err + buff;
         }
