@@ -62,7 +62,5 @@ AC_CHECK_BES([3.13.0],
 [ AC_MSG_ERROR([Could not find bes library and headers])
 ])
 
-OPENDAP_DEBUG_OPTION
-
 AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal])
 AC_OUTPUT
