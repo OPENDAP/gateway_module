@@ -9,6 +9,8 @@ AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE(1.10)
 
+AM_CONDITIONAL([DAP_MODULES], [false])
+
 # The handler is a shared object library, so we don't normally need
 # the static lib. Override this default by specifying `--enable-static',
 # which can make running unit tests with valgrind far more pleasant. 
@@ -62,5 +64,5 @@ AC_CHECK_BES([3.13.0],
 [ AC_MSG_ERROR([Could not find bes library and headers])
 ])
 
-AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal])
+AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal bes-testsuite/bes.conf])
 AC_OUTPUT
