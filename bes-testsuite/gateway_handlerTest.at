@@ -33,6 +33,13 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/gateway/$1], [$abs_srcdir/gateway/$1.baseline])
 ])
 
-AT_BESCMD_RESPONSE_TEST([test.00.bescmd])
-AT_BESCMD_RESPONSE_TEST([test.01.bescmd])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([test.02.bescmd])
+# These tests use the server at RPI and it's often off line.
+# jhrg 12/1/14
+#
+# AT_BESCMD_RESPONSE_TEST([test.00.bescmd])
+# AT_BESCMD_RESPONSE_TEST([test.01.bescmd])
+# AT_BESCMD_BINARYDATA_RESPONSE_TEST([test.02.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([fnoc1.1.bescmd])
+AT_BESCMD_RESPONSE_TEST([fnoc1.2.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([fnoc1.3.bescmd])
