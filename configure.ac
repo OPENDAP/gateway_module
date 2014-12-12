@@ -64,5 +64,12 @@ AC_CHECK_BES([3.13.0],
 [ AC_MSG_ERROR([Could not find bes library and headers])
 ])
 
+## This sets up the special symbols used to build the bes.conf file for
+## the tests. Previously, this was done in the Makefile.am down in the
+## test directory, but building the bes.conf here works better with
+## autoconf overall and esp. with the 'modules' build. jhrg 11/19/14
+modulesdir=$BES_MODULE_DIR
+AC_SUBST(modulesdir)
+
 AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal bes-testsuite/bes.conf])
 AC_OUTPUT
