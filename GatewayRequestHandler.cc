@@ -33,7 +33,10 @@ bool GatewayRequestHandler::gateway_build_vers(BESDataHandlerInterface &dhi)
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
     if (!info)
         throw InternalErr(__FILE__, __LINE__, "Expected a BESVersionInfo instance");
+#if 0
     info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
+#endif
+    info->add_module(MODULE_NAME, MODULE_VERSION);
     return ret;
 }
 
@@ -47,8 +50,12 @@ bool GatewayRequestHandler::gateway_build_help(BESDataHandlerInterface &dhi)
     // This is an example. If you had a help file you could load it like
     // this and if your handler handled the following responses.
     map < string, string > attrs;
+    attrs["name"] = MODULE_NAME ;
+    attrs["version"] = MODULE_VERSION ;
+#if 0
     attrs["name"] = PACKAGE_NAME;
     attrs["version"] = PACKAGE_VERSION;
+#endif
     list < string > services;
     BESServiceRegistry::TheRegistry()->services_handled(Gateway_NAME, services);
     if (services.size() > 0) {

@@ -9,6 +9,20 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
+# Set the module version here, in the spec file and in configure.ac
+M_NAME=gateway_module
+M_VER=1.1.2
+
+if DAP_MODULES
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+else
+AM_CPPFLAGS = $(BES_CPPFLAGS) # or wahtever was set here or in ..._CPPFLAGS
+LIBADD = $(BES_DAP_LIBS)      # and ..._LIBADD
+endif
+
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+
 SUBDIRS = . bes-testsuite
 
 lib_besdir=$(libdir)/bes
@@ -28,9 +42,9 @@ GATEWAY_HDRS = \
 		RemoteHttpResource.h curl_utils.h
 
 libgateway_module_la_SOURCES = $(GATEWAY_SRCS) $(GATEWAY_HDRS)
-libgateway_module_la_CPPFLAGS = $(BES_CPPFLAGS)
+# libgateway_module_la_CPPFLAGS = $(BES_CPPFLAGS)
 libgateway_module_la_LDFLAGS = -avoid-version -module 
-libgateway_module_la_LIBADD = $(BES_DAP_LIBS)
+libgateway_module_la_LIBADD = $(LIBADD)
 
 EXTRA_PROGRAMS = 
 
@@ -49,7 +63,7 @@ install-data-local: gateway.conf
 uninstall-local:
 	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/gateway.conf
 
-gateway.conf: gateway.conf.in config.status
+gateway.conf: gateway.conf.in $(top_srcdir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > gateway.conf
 
 # Not nearly as clean as it could be, but this removes .svn directories
