@@ -17,10 +17,24 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum site.exp gmon.*
 
-EXTRA_DIST = gateway gateway_handlerTest.at $(TESTSUITE) atlocal.in \
-$(srcdir)/package.m4 $(srcdir)/bes.conf.in $(srcdir)/bes.conf.modules.in
+EXTRA_DIST = gateway $(TESTSUITE).at $(TESTSUITE) atlocal.in \
+package.m4 bes.conf.in bes.conf.modules.in
 
 DISTCLEANFILES = bes.conf
+
+if DAP_MODULES
+BES_CONF_IN = bes.conf.modules.in
+else
+BES_CONF_IN = bes.conf.in
+endif
+
+# Build the bes.conf used for testing so that the value substituted for
+# @abs_top_srcdir@ does not contain '../'. This happens when using 
+# configure's value for the parameter when running the distcheck target.
+bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 ############## Autotest follows #####################
 
@@ -38,7 +52,7 @@ distclean-local:
 	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/gateway_handlerTest.at $(srcdir)/package.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 
@@ -52,5 +66,4 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
-
 
