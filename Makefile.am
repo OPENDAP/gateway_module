@@ -48,8 +48,12 @@ libgateway_module_la_LIBADD = $(LIBADD)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = COPYRIGHT COPYING gateway_module.spec \
+EXTRA_DIST = COPYRIGHT COPYING \
     gateway.conf.in OSX_Resources
+
+if !DAP_MODULES
+EXTRA_DIST += gateway_module.spec
+endif
 
 CLEANFILES = *~ gateway.conf
 
