@@ -1,3 +1,60 @@
+2015-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Added to gitignore
+
+2015-03-19  James Gallagher  <jgallagher@opendap.org>
+
+	Fix for	distclean and the modules build.
+
+2015-01-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed dist-hook which as a hack for SVN
+
+2014-12-12  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed configure.ac after merging with the modules branch
+
+	Merge remote-tracking branch 'origin/modules'
+
+2014-12-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added module name and version info to Makefile.am
+	This change was made to support the modules build where the autoconf
+	symbols PACKAGE_NAME and _MODULE are defined by the bes configure
+	script. This meant that the version response from the bes was useless
+	since it listed every module as 'bes' and gave the bes' version
+	number.
+
+2014-12-04  James Gallagher  <jgallagher@opendap.org>
+
+	Updated	the spec file to release 2.
+
+	Updated the spec file for hyrax 1.10
+
+2014-12-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added new tests based on the opendap test server.
+	The hope is that this server willbe more reliable than the RPI server.
+
+2014-11-26  James Gallagher  <jgallagher@opendap.org>
+
+	Changes for the BES modules build.
+	Added .gitignore and bes.conf.modules.in.
+	Changed the configure.ac and Makefile.am files.
+
+2014-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the old OPENDAP_DEBUG_OPTIONS macro from many configure.ac files. Fixed some param initializations; method overloads (virtual methods that lacked 'const'). Other warnings.
+
+2014-05-02  James Gallagher  <jgallagher@opendap.org>
+
+	hanges	after merging the trunk	code (H	1.9.3) to the dap4 branch.
+	M    GatewayError.cc
+	M    Makefile.am
+
+2014-04-23  Nathan Potter  <ndp@opendap.org>
+
+	gateway_module: Checking software version update and associated release changes.
 2014-02-05  James Gallagher <jgallagher@opendap.org>
 
 	Changes for OSX 10.9
