@@ -7,10 +7,6 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,
-BES.module.dap=@modulesdir@/libdap_module.so
-BES.module.cmd=@modulesdir@/libdap_xml_module.so
-
 BES.modules=dap,cmd,dapreader,gateway,nc
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
@@ -21,7 +17,10 @@ BES.module.gateway=@abs_top_builddir@/modules/gateway_module/.libs/libgateway_mo
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/gateway_module
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=dapreader:.*.das(.bz2|.gz|.Z)?$;dapreader:.*.dods(.bz2|.gz|.Z)?$;dapreader:.*.dds(.bz2|.gz|.Z)?$;nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;
+# It would be cool if dapreader worked here, but it does not...
+# jhrg 7/14/15
+BES.Catalog.catalog.TypeMatch=dapreader:.*.das(.bz2|.gz|.Z)?$;dapreader:.*.dods(.bz2|.gz|.Z)?$;dapreader:.*.dds(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch+=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
