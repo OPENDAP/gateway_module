@@ -15,12 +15,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
-CLEANFILES = *.log *.sum site.exp gmon.*
+CLEANFILES = *.log *.sum gmon.* $(TESTSUITE) $(srcdir)/package.m4
 
 EXTRA_DIST = gateway $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-package.m4 bes.conf.in bes.conf.modules.in
+$(srcdir)/package.m4 bes.conf.in bes.conf.modules.in
 
-DISTCLEANFILES = bes.conf
+DISTCLEANFILES = bes.conf atconfig
 
 if DAP_MODULES
 BES_CONF_IN = bes.conf.modules.in
@@ -39,7 +39,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
- 
+
 TESTSUITE = $(srcdir)/gateway_handlerTest
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
@@ -47,10 +47,6 @@ check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm $(srcdir)/package.m4
-	
-distclean-local:
-	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
