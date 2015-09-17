@@ -58,14 +58,15 @@ void GatewayError::read_error(const string &filename, string &err, const string 
 
     // read from the file until there is no more to read
     bool done = false;
+    const unsigned int bufsize = 1025;
     while (!done) {
-        char buff[1025];
-        size_t bytes_read = fread(buff, 1, 1024, f);
-        if (!bytes_read) {
+        char buff[bufsize];
+        size_t bytes_read = fread(buff, 1, bufsize-1, f);
+        if (0 == bytes_read) {
             done = true;
         }
         else {
-            if (bytes_read == 0 && bytes_read <= 1024)
+            if (/*bytes_read == 0 &&*/ bytes_read < bufsize)
                 buff[bytes_read] = '\0';
             err = err + buff;
         }
