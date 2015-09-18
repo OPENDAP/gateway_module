@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gateway_module
-M_VER=1.1.3
+M_VER=1.1.4
 
 if DAP_MODULES
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
@@ -21,7 +21,7 @@ AM_CPPFLAGS = $(BES_CPPFLAGS) # or wahtever was set here or in ..._CPPFLAGS
 LIBADD = $(BES_DAP_LIBS)      # and ..._LIBADD
 endif
 
-AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER=AC_INIT([gateway_module], [1.1.3], [support@opendap.00001
 
 SUBDIRS = . bes-testsuite
 

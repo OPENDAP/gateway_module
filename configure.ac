@@ -3,7 +3,7 @@
 # Configure script for OPeNDAP Gateway data handler
 
 AC_PREREQ(2.59)
-AC_INIT([gateway_module], [1.1.3], [support@opendap.org])
+AC_INIT(gateway_module, 1.1.4, support@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
