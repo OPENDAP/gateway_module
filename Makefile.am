@@ -21,7 +21,7 @@ AM_CPPFLAGS = $(BES_CPPFLAGS) # or wahtever was set here or in ..._CPPFLAGS
 LIBADD = $(BES_DAP_LIBS)      # and ..._LIBADD
 endif
 
-AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER=AC_INIT([gateway_module], [1.1.3], [support@opendap.00001
+AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 SUBDIRS = . bes-testsuite
 
