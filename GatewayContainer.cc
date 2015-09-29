@@ -43,6 +43,9 @@
 #include "GatewayResponseNames.h"
 #include "RemoteHttpResource.h"
 
+
+const string GatewayContainer::CACHE_CONTROL_FILE = "gateway.cache.info";
+
 /** @brief Creates an instances of GatewayContainer with symbolic name and real
  * name, which is the remote request.
  *
@@ -131,8 +134,11 @@ string GatewayContainer::access() {
 
 
     // Get a pointer to the singleton cache instance for this process.
-    BESCache3 *cache = BESCache3::get_instance(TheBESKeys::TheKeys(), (string)"BES.CacheDir",
-                                               (string)"BES.CachePrefix", (string)"BES.CacheSize");
+    BESCache3 *cache = BESCache3::get_instance(TheBESKeys::TheKeys(),
+    		(string)"BES.CacheDir",
+			(string)"BES.CachePrefix",
+			(string)"BES.CacheSize",
+			CACHE_CONTROL_FILE);
 
     BESDEBUG( "gateway", "GatewayContainer::access() - Accessing " << url << endl);
 

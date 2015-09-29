@@ -63,6 +63,8 @@ private:
 protected:
     void _duplicate(GatewayContainer &copy_to);
 public:
+	static const string CACHE_CONTROL_FILE;
+
     GatewayContainer(const string &sym_name, const string &real_name,
             const string &type);
 

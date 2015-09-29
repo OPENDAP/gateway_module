@@ -44,6 +44,7 @@
 #include "BESRegex.h"
 #include "TheBESKeys.h"
 
+#include "GatewayContainer.h"
 #include "GatewayUtils.h"
 #include "curl_utils.h"
 #include "RemoteHttpResource.h"
@@ -145,8 +146,12 @@ void RemoteHttpResource::retrieveResource()
     }
 
     // Get a pointer to the singleton cache instance for this process.
-    BESCache3 *cache = BESCache3::get_instance(TheBESKeys::TheKeys(), (string) "BES.CacheDir",
-        (string) "BES.CachePrefix", (string) "BES.CacheSize");
+    BESCache3 *cache = BESCache3::get_instance(
+    		TheBESKeys::TheKeys(),
+			(string) "BES.CacheDir",
+			(string) "BES.CachePrefix",
+			(string) "BES.CacheSize",
+			GatewayContainer::CACHE_CONTROL_FILE);
 
     // Get the name of the file in the cache (either the code finds this file or
     // or it makes it).

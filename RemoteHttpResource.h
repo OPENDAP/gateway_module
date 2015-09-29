@@ -122,12 +122,13 @@ private:
 protected:
 
     RemoteHttpResource() :
+    	d_remoteResourceUrl(""),
         d_fd(0),
-        d_curl(0),
-        d_response_headers(0),
-        d_request_headers(0),
         _initialized(false),
-        d_resourceCacheFileName("")
+        d_curl(0),
+        d_resourceCacheFileName(""),
+        d_request_headers(0),
+        d_response_headers(0)
     {}
 
 
