@@ -270,6 +270,10 @@ BES.DefaultResponseMethod=POST
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
+Gateway.Cache.dir=/tmp
+Gateway.Cache.prefix=gateway_cache
+Gateway.Cache.size=500
+
 Gateway.Whitelist=http://opendap.rpi.edu
 Gateway.Whitelist+=http://test.opendap.org
 

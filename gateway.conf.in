@@ -55,3 +55,15 @@ Gateway.MimeTypes+=h5:application/x-hdf5
 #Gateway.ProxyUserPW=username:password
 #Gateway.ProxyAuthType=basic
 
+# Gateway.Cache.dir - defines which directory to use for caching web 
+# resources retrieved by the gateway_module
+
+# Gateway.Cache.prefix - defines the prefix for cache files so that 
+# they will be easily identifiable.
+
+# Gateway.Cache.size - The maxium size of the Gateway cache, in megabytes.
+
+Gateway.Cache.dir=/tmp
+Gateway.Cache.prefix=gateway_cache
+Gateway.Cache.size=500
+

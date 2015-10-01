@@ -131,8 +131,12 @@ string GatewayContainer::access() {
 
 
     // Get a pointer to the singleton cache instance for this process.
-    BESCache3 *cache = BESCache3::get_instance(TheBESKeys::TheKeys(), (string)"BES.CacheDir",
-                                               (string)"BES.CachePrefix", (string)"BES.CacheSize");
+    BESCache3 *cache =
+    		BESCache3::get_instance(
+    				TheBESKeys::TheKeys(),
+					GatewayUtils::CACHE_DIR_KEY,
+					GatewayUtils::CACHE_PREFIX_KEY,
+					GatewayUtils::CACHE_SIZE_KEY);
 
     BESDEBUG( "gateway", "GatewayContainer::access() - Accessing " << url << endl);
 
