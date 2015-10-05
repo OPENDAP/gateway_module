@@ -16,9 +16,6 @@
 #include "TheBESKeys.h"
 
 
-static const string BES_DATA_ROOT("BES.Data.RootDirectory");
-static const string BES_CATALOG_ROOT("BES.Catalog.catalog.RootDirectory");
-
 namespace gateway
 {
 
@@ -96,7 +93,6 @@ GatewayCache::GatewayCache()
 
     BESDEBUG("cache", "GatewayCache() - Cache configuration params: " << cacheDir << ", " << cachePrefix << ", " << cacheSizeMbytes << endl);
 
-  	// initialize(d_dimCacheDir, CACHE_CONTROL_FILE, d_dimCacheFilePrefix, d_maxCacheSize);
   	initialize(cacheDir, cachePrefix, cacheSizeMbytes);
 
     BESDEBUG("cache", "GatewayCache::GatewayCache() -  END" << endl);
