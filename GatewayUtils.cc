@@ -67,10 +67,6 @@ int GatewayUtils::ProxyPort = 0;
 int GatewayUtils::ProxyAuthType = 0;
 bool GatewayUtils::useInternalCache = false;
 
-const string GatewayUtils::CACHE_DIR_KEY    = "Gateway.Cache.dir";
-const string GatewayUtils::CACHE_PREFIX_KEY = "Gateway.Cache.prefix";
-const string GatewayUtils::CACHE_SIZE_KEY   = "Gateway.Cache.size";
-
 string GatewayUtils::NoProxyRegex;
 
 // Initialization routine for the gateway module for certain parameters

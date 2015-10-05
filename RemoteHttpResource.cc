@@ -44,6 +44,7 @@
 #include "BESRegex.h"
 #include "TheBESKeys.h"
 
+#include "GatewayCache.h"
 #include "GatewayUtils.h"
 #include "curl_utils.h"
 #include "RemoteHttpResource.h"
@@ -111,7 +112,7 @@ RemoteHttpResource::RemoteHttpResource(const string &url)
     BESDEBUG("gateway", "~RemoteHttpResource() - Deleted d_request_headers." << endl);
 
     if (!d_resourceCacheFileName.empty()) {
-        BESCache3::get_instance()->unlock_and_close(d_resourceCacheFileName);
+        GatewayCache::get_instance()->unlock_and_close(d_resourceCacheFileName);
         BESDEBUG("gateway", "~RemoteHttpResource() - Closed and unlocked "<< d_resourceCacheFileName << endl);
         d_resourceCacheFileName.clear();
     }
@@ -145,19 +146,12 @@ void RemoteHttpResource::retrieveResource()
     }
 
     // Get a pointer to the singleton cache instance for this process.
-    BESCache3 *cache =
-    		BESCache3::get_instance(
-    				TheBESKeys::TheKeys(),
-					GatewayUtils::CACHE_DIR_KEY,
-					GatewayUtils::CACHE_PREFIX_KEY,
-					GatewayUtils::CACHE_SIZE_KEY);
+    GatewayCache *cache =
+    		GatewayCache::get_instance();
 
     // Get the name of the file in the cache (either the code finds this file or
     // or it makes it).
-    // @TODO Fix BESCache3 so that you can ask it to NOT strip the suffix which is some kind of funky
-    // Uncompress feature that should be controllable and probably driven by a regex. Then we can stop
-    // adding our own suffix so that BESCache3 can remove it.
-    d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl + ".uglyHack");
+    d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl);
     BESDEBUG("gateway",
         "RemoteHttpResource::retrieveResource() - d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 

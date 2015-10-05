@@ -36,7 +36,6 @@
 #include <curl/easy.h>
 
 #include "util.h"
-#include "BESCache3.h"
 #include "InternalErr.h"
 #include "RCReader.h"
 
@@ -123,11 +122,11 @@ protected:
 
     RemoteHttpResource() :
         d_fd(0),
-        d_curl(0),
-        d_response_headers(0),
-        d_request_headers(0),
         _initialized(false),
-        d_resourceCacheFileName("")
+        d_curl(0),
+        d_resourceCacheFileName(""),
+        d_request_headers(0),
+	    d_response_headers(0)
     {}
 
 

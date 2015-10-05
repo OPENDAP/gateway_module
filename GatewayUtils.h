@@ -60,10 +60,6 @@ public:
 
     static string       NoProxyRegex ;
 
-    static const string CACHE_DIR_KEY;
-    static const string CACHE_PREFIX_KEY;
-    static const string CACHE_SIZE_KEY;
-
     static void			Initialize() ;
 #if 0
     static char *		Get_tempfile_template( char *file_template ) ;

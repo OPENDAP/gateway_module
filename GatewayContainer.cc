@@ -36,7 +36,6 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <TheBESKeys.h>
-#include "BESCache3.h"
 
 #include "GatewayRequest.h"
 #include "GatewayUtils.h"
@@ -129,15 +128,6 @@ string GatewayContainer::access() {
     // Since this the Gateway we know that the real_name is a URL.
     string url  = get_real_name();
 
-
-    // Get a pointer to the singleton cache instance for this process.
-    BESCache3 *cache =
-    		BESCache3::get_instance(
-    				TheBESKeys::TheKeys(),
-					GatewayUtils::CACHE_DIR_KEY,
-					GatewayUtils::CACHE_PREFIX_KEY,
-					GatewayUtils::CACHE_SIZE_KEY);
-
     BESDEBUG( "gateway", "GatewayContainer::access() - Accessing " << url << endl);
 
     string type = get_container_type();
@@ -164,7 +154,7 @@ string GatewayContainer::access() {
     BESDEBUG( "gateway", "GatewayContainer::access() - Done accessing " << *this << endl);
     BESDEBUG( "gateway", "GatewayContainer::access() - END" << endl);
 
-    return cachedResource;    // this should return the file name from bescache3
+    return cachedResource;    // this should return the file name from the GatewayCache
 }
 
 
