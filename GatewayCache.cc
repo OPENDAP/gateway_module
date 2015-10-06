@@ -65,7 +65,7 @@ string GatewayCache::getCacheDirFromConfig(){
 }
 
 
-string GatewayCache::getDimCachePrefixFromConfig(){
+string GatewayCache::getCachePrefixFromConfig(){
 	bool found;
     string prefix = "";
     TheBESKeys::TheKeys()->get_value( PREFIX_KEY, prefix, found ) ;
@@ -88,7 +88,7 @@ GatewayCache::GatewayCache()
 	BESDEBUG("cache", "GatewayCache::GatewayCache() -  BEGIN" << endl);
 
 	string cacheDir               = getCacheDirFromConfig();
-    string cachePrefix            = getDimCachePrefixFromConfig();
+    string cachePrefix            = getCachePrefixFromConfig();
     unsigned long cacheSizeMbytes = getCacheSizeFromConfig();
 
     BESDEBUG("cache", "GatewayCache() - Cache configuration params: " << cacheDir << ", " << cachePrefix << ", " << cacheSizeMbytes << endl);
@@ -156,39 +156,6 @@ GatewayCache::~GatewayCache()
 	delete_instance();
 }
 
-
-
-#if 0
-
-/**
- * Returns the fully qualified file system path name for the dimension cache file associated
- * with this particular cache resource..
- */
-string GatewayCache::get_cache_file_name(const string &local_id, bool mangle)
-{
-
-	BESDEBUG("cache", "GatewayCache::get_cache_file_name() - Starting with local_id: " << local_id << endl);
-
-	std::string cacheFileName(local_id);
-
-	cacheFileName = assemblePath( getCacheFilePrefix(), cacheFileName);
-
-	if(mangle){
-
-		// There should never be spaces in a URL, but just in case we'll replace them anyway...
-		std::replace( cacheFileName.begin(), cacheFileName.end(), ' ', '#'); // replace all ' ' with '#'
-
-		// We know there will be slashes ('/') in URLs so we'll purge those...
-		std::replace( cacheFileName.begin(), cacheFileName.end(), '/', '#'); // replace all '/' with '#'
-	}
-
-	cacheFileName = assemblePath( getCacheDirectory(),  cacheFileName,true);
-
-	BESDEBUG("cache","GatewayCache::get_cache_file_name() - cacheFileName: " <<  cacheFileName << endl);
-
-	return cacheFileName;
-}
-#endif
 
 
 

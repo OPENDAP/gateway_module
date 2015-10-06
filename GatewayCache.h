@@ -24,30 +24,22 @@ private:
     GatewayCache(const GatewayCache &src);
 
     static string getCacheDirFromConfig();
-    static string getDimCachePrefixFromConfig();
+    static string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
 
 
 protected:
 
-    // GatewayCache(const string &data_root_dir, const string &stored_results_subdir, const string &prefix, unsigned long long size);
     GatewayCache(const string &cache_dir, const string &prefix, unsigned long long size);
 
 public:
 	static const string DIR_KEY;
 	static const string PREFIX_KEY;
 	static const string SIZE_KEY;
-	 // static const string CACHE_CONTROL_FILE;
 
-    // static GatewayCache *get_instance(const string &bes_catalog_root_dir, const string &stored_results_subdir, const string &prefix, unsigned long long size);
     static GatewayCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
     static GatewayCache *get_instance();
 
-
-    static string assemblePath(const string &firstPart, const string &secondPart, bool addLeadingSlash =  false);
-
-    // Overrides parent method
-    //virtual string get_cache_file_name(const string &src, bool mangle = false);
 
 	virtual ~GatewayCache();
 };
