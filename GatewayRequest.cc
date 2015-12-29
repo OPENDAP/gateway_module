@@ -38,6 +38,7 @@
 using namespace libdap ;
 
 #include <BESInternalError.h>
+#include <BESDapError.h>
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 #include <BESCatalogUtils.h>
@@ -107,8 +108,10 @@ GatewayRequest::make_request( const string &url, string &type )
     }
     catch( Error &e )
     {
-        BESInternalError err( e.get_error_message(), __FILE__, __LINE__ ) ;
-        throw err ;
+        throw BESDapError("Failed to connect to remote resource. Msg: " + e.get_error_message(), false, e.get_error_code(),__FILE__, __LINE__);
+    }
+    catch (BESError &e) {
+        throw;
     }
     catch( ... )
     {

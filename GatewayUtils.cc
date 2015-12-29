@@ -48,6 +48,7 @@
 #include <BESRegex.h>
 #include <TheBESKeys.h>
 #include <BESInternalError.h>
+#include <BESDapError.h>
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
@@ -345,7 +346,7 @@ void GatewayUtils::Get_type_from_disposition(const string &disp, string &type) {
                         + "malformed Catalog TypeMatch parameter "
                         + "in bes configuration file around "
                         + match.reg + ": " + e.get_error_message();
-                        throw BESInternalError( serr, __FILE__, __LINE__ );
+                        throw BESDapError(serr, false, e.get_error_code(),__FILE__, __LINE__);
                     }
                 }
             }
