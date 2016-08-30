@@ -26,8 +26,8 @@ Attributes {
         String units "hours from base_time";
     }
     NC_GLOBAL {
-        String NC_GLOBAL.base_time "88- 10-00:00:00";
-        String NC_GLOBAL.title " FNOC UV wind components from 1988- 10 to 1988- 13.";
+        String base_time "88- 10-00:00:00";
+        String title " FNOC UV wind components from 1988- 10 to 1988- 13.";
         String DODS_EXTRA.Unlimited_Dimension "time_a";
     }
 }
