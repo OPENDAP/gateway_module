@@ -2,10 +2,10 @@
 
 #include "config.h"
 
-#include "GatewayRequestHandler.h"
+#include <InternalErr.h>
+
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>
-#include "GatewayResponseNames.h"
 #include <BESVersionInfo.h>
 #include <BESTextInfo.h>
 #include "BESDapNames.h"
@@ -15,6 +15,11 @@
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
+
+#include "GatewayRequestHandler.h"
+#include "GatewayResponseNames.h"
+
+using namespace libdap;
 
 GatewayRequestHandler::GatewayRequestHandler(const string &name) :
         BESRequestHandler(name)
