@@ -1,3 +1,33 @@
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Minor patch to the REMOVE_RATE_TIME macro
+	The fonc_handler adds history information that has to be removed
+	for the test baseline to match and the server versiion is part of
+	this. For somereason we have a server version that fails to match
+	the simpler regexes that worked before.
+
+2016-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed DataDDS include and libdap namespace after repairing the BESDataDDSResponse header
+
+2016-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed broken test
+	We added a History attribute to the stuff fileout netcdf
+	builds and the result is that one of our tests here needs
+	to strip date/time and server version info from the DAS.
+
+2016-09-21  ndp-opendap  <ndp@opendap.org>
+
+	gateway_module: Fixed baseline that shifted due to glbal attribute promotion in fnoc
+
+2016-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.1
+
+2016-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	Updated ChangeLog, etc., for the bes 3.17 release
 2016-01-26  James Gallagher  <jgallagher@opendap.org>
 
 	Updated ChangeLog, etc., for the bes 3.17 release
