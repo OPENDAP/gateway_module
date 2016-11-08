@@ -17,6 +17,8 @@ lex.*.cc
 *.pc
 *.log
 *.trs
+*.DS_Store
+
 
 .dirstamp
 
