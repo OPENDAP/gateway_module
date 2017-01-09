@@ -1,3 +1,10 @@
+2016-11-08  ndp-opendap  <ndp@opendap.org>
+
+	 Added Apple finder spoo to gitignore
+
+2016-11-02  James Gallagher  <jgallagher@opendap.org>
+
+	Hyrax 1.13.2
 2016-11-02  James Gallagher  <jgallagher@opendap.org>
 
 	Minor patch to the REMOVE_RATE_TIME macro
