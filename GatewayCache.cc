@@ -13,6 +13,7 @@
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include <BESUtil.h>
 #include "TheBESKeys.h"
 
 

@@ -43,6 +43,7 @@
 
 #include "BESRegex.h"
 #include "TheBESKeys.h"
+#include <BESUtil.h>
 
 #include "GatewayCache.h"
 #include "GatewayUtils.h"
